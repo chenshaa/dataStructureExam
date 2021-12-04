@@ -1,1 +1,9 @@
-# dataStructureExam
+# 数据结构考试系统
+
+## 0、idea记录
+
+- [ ] 图片采用base64储存
+- [ ] 题目采用markdown格式
+
+## 1、数据库设计
+
