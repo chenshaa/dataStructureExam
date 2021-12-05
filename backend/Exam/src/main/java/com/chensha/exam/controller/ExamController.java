@@ -1,14 +1,15 @@
 package com.chensha.exam.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.chensha.exam.vo.Result;
+import com.chensha.exam.vo.params.LoginParams;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("exam")
 public class ExamController {
 
-
-    public void listExam(){
-
+    @PostMapping("test")
+    public Result test(@RequestHeader("Authorization")String token, @RequestBody LoginParams loginParams){
+        return Result.success("成功");
     }
 }

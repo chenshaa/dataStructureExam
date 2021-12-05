@@ -12,6 +12,8 @@ import java.util.Map;
 public class JWTUtils {
 
     private static final String jwtToken = "123456Mszlu!@#$$";
+    public static final String AUTH_HEADER_KEY = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
 
     public static String createToken(String userAccount){
         Map<String,Object> claims = new HashMap<>();
@@ -21,8 +23,7 @@ public class JWTUtils {
                 .setClaims(claims) // body数据，要唯一，自行设置
                 .setIssuedAt(new Date()) // 设置签发时间
                 .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 60 * 1000));// 一天的有效时间
-        String token = jwtBuilder.compact();
-        return token;
+        return jwtBuilder.compact();
     }
 
     public static Map<String, Object> checkToken(String token){
@@ -33,6 +34,17 @@ public class JWTUtils {
             e.printStackTrace();
         }
         return null;
-
     }
+
+    public static String getAccount(String token){
+        try{
+            Map<String, Object> claims=checkToken(token);
+            return claims.get("userAccount").toString();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }
