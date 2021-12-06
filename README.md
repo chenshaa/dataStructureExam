@@ -108,5 +108,92 @@ OBJECT_EXISTS(409,"对象已经存在");
 
 
 
-#### 2.1.2 
+#### 2.1.2  
+
+### 2.2 Exam
+
+接口url：/exam
+
+#### 2.2.1 listExam
+
+接口url：/listexam
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+
+返回数据：
+
+~~~json
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": [
+        {
+            "examId": "1467830221552652290",
+            "examName": "数据结构-1",
+            "examDescription": "用来测试的考试",
+            "examStartTime": 1638693549256,
+            "examEndTime": 1638693559256
+        },
+        {
+            "examId": "1467833204239667201",
+            "examName": "数据结构-2",
+            "examDescription": "用来测试的考试",
+            "examStartTime": 1638693549256,
+            "examEndTime": 1638693559256
+        }
+    ]
+}
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+
+
+#### 2.2.2 addExam
+
+接口url：/addexam
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称        | 参数类型 | 说明                     |
+| --------------- | -------- | ------------------------ |
+| authorization   | string   | Bearer token             |
+| examName        | string   | 考试名称                 |
+| examDescription | string   | 考试描述                 |
+| examStartTime   | string   | 考试开始时间，Unix时间戳 |
+| examEndTime     | string   | 考试结束时间，同上       |
+
+返回数据：
+
+~~~json
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+
 

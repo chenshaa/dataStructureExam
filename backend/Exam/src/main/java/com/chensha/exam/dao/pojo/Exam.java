@@ -1,5 +1,7 @@
 package com.chensha.exam.dao.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ public class Exam {
     /**
      * 主id
      */
+    @TableId(type = IdType.ASSIGN_ID)
     private String examId;
 
     /**
@@ -27,22 +30,22 @@ public class Exam {
     /**
      * 考试创建时间
      */
-    private LocalDateTime examCreateTime;
+    private Long examCreateTime;
 
     /**
      * 考试更新时间
      */
-    private LocalDateTime examUpdateTime;
+    private Long examUpdateTime;
 
     /**
      * 考试开始时间
      */
-    private LocalDateTime examStartTime;
+    private Long examStartTime;
 
     /**
      * 考试结束时间
      */
-    private LocalDateTime examEndTime;
+    private Long examEndTime;
 
 
 }

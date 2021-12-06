@@ -4,6 +4,8 @@ server:
 
 #datasource
 spring:
+  application:
+    name: examService
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/bh_exam?useUnicode=true&characterEncoding=UTF-8&serverTimeZone=UTC
