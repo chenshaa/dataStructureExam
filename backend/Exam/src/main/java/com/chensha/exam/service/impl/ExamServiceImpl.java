@@ -6,7 +6,6 @@ import com.chensha.exam.dao.mapper.ExamMapper;
 import com.chensha.exam.dao.pojo.Exam;
 import com.chensha.exam.service.ExamService;
 import com.chensha.exam.service.SysUserService;
-import com.chensha.exam.utils.JWTUtils;
 import com.chensha.exam.vo.ErrorCode;
 import com.chensha.exam.vo.ExamVo;
 import com.chensha.exam.vo.Result;
@@ -28,7 +27,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public Result listExam(String authHeader) {
-        if(auth(authHeader)==null){
+        if(sysUserService.authToken(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
@@ -39,13 +38,17 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public Result addExam(String authHeader, ExamParams examParams) {
-        if(auth(authHeader)==null){
+        if(sysUserService.authToken(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
         if(examParams == null || StringUtils.isBlank(examParams.getExamName()) || StringUtils.isBlank(examParams.getExamDescription())
-                || examParams.getExamEndTime() == 0 || examParams.getExamEndTime() == 0){
+                || examParams.getExamEndTime() == 0 || examParams.getExamStartTime() == 0){
             return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
+        }
+
+        if(getExamByName(examParams.getExamName()) != null ){
+            return Result.fail(ErrorCode.OBJECT_EXISTS.getCode(),ErrorCode.OBJECT_EXISTS.getMsg());
         }
 
         Exam exam = new Exam();
@@ -66,13 +69,11 @@ public class ExamServiceImpl implements ExamService {
         return examVoList;
     }
 
-    public String auth(String authHeader){
-        String token = authHeader.substring(7);
-        String account = JWTUtils.getAccount(token);
-        int userGroup = sysUserService.getGroupByAccount(account);
-        if(userGroup!=0 && userGroup!=1){
-            return null;
-        }
-        return token;
+    public Exam getExamByName(String name){
+        LambdaQueryWrapper<Exam> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Exam::getExamName,name);
+        queryWrapper.last("limit 1");
+
+        return (examMapper.selectOne(queryWrapper));
     }
 }

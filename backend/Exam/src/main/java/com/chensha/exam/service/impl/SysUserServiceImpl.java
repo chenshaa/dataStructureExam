@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chensha.exam.dao.mapper.UserMapper;
 import com.chensha.exam.dao.pojo.User;
 import com.chensha.exam.service.SysUserService;
+import com.chensha.exam.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +48,16 @@ public class SysUserServiceImpl implements SysUserService {
         queryWrapper.last("limit 1");
 
         return (userMapper.selectOne(queryWrapper).getUserGroup());
+    }
+
+    @Override
+    public String authToken(String authHeader) {
+        String token = authHeader.substring(7);
+        String account = JWTUtils.getAccount(token);
+        int userGroup = getGroupByAccount(account);
+        if (userGroup != 0 && userGroup != 1) {
+            return null;
+        }
+        return token;
     }
 }

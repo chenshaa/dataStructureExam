@@ -1,21 +1,9 @@
-package com.chensha.exam.dao.pojo;
+package com.chensha.exam.vo.params;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
-public class Question {
-    private static final long serialVersionUID=1L;
-
-    /**
-     * 题目d
-     */
-    @TableId(type = IdType.ASSIGN_ID)
-    private String questionId;
-
+public class QuestionParams {
     /**
      * 题目内容
      */
@@ -58,16 +46,5 @@ public class Question {
      * 选择类为选项编号，用-连接；填空，简答选择第一个选项。内容未null表示无法自动判断。
      */
     private String questionRightChoice;
-
-    /**
-     * 题目创建时间
-     */
-    private Long questionCreateTime;
-
-    /**
-     * 题目更新时间
-     */
-    private Long questionUpdateTime;
-
 
 }

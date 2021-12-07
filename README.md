@@ -1,6 +1,6 @@
 # 数据结构考试系统
 
-## 1、feature
+## 0、feature
 
 - [ ] 图片采用base64储存
 - [ ] 题目采用markdown格式
@@ -193,7 +193,73 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+OBJECT_EXISTS(409,"对象已经存在"),
+//已存在同名考试
 ```
 
 
+
+### 2.3 Question
+
+接口url：/ques
+
+#### 2.3.1 listQuestion
+
+接口url：/listques
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.2.2 addExam
+
+接口url：/addexam
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称            | 参数类型 | 说明                                                         |
+| ------------------- | -------- | ------------------------------------------------------------ |
+| authorization       | string   | Bearer token                                                 |
+| questionText        | string   | 题目                                                         |
+| questionPicture     | int      | 分值                                                         |
+| questionScore       | int      | 题目类型<br/>定义0为单选，1为多选，2为不定项选择，3为填空，4为判断，5为简答，6为综合题 |
+| questionLink        | string   | 关联试卷，用于将题目关联至试卷，可以为空                     |
+| questionOpinion1    | string   | 选项1<br/>单、多、不定项选择按需填写，判断填写前两项<br/>填空、简答、综合题无需填写 |
+| questionOpinion2    | string   | 同上                                                         |
+| questionOpinion3    | string   | 同上                                                         |
+| questionOpinion4    | string   | 同上                                                         |
+| questionOpinion5    | string   | 同上                                                         |
+| questionRightChoice | string   | 题目答案<br/>填写选项时在此填写正确选项，多项正确时用-连接   |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
 

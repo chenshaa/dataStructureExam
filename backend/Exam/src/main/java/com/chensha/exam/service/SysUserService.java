@@ -11,4 +11,6 @@ public interface SysUserService {
     void save(User user);
 
     int getGroupByAccount(String account);
+
+    public String authToken(String authHeader);
 }
