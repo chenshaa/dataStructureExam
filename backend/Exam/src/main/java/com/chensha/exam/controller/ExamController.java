@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("exam")
 public class ExamController {
 
-    @Autowired
-    private ExamService examService;
+    private final ExamService examService;
+
+    public ExamController(ExamService examService) {
+        this.examService = examService;
+    }
 
     @GetMapping("listexam")
     public Result listExam(@RequestHeader("Authorization")String authHeader) {

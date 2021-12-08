@@ -263,3 +263,89 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 ```
 
+
+
+### 2.4 Paper
+
+接口url：/paper
+
+#### 2.4.1 listMyExam
+
+接口url：/listmyexam
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.2 startExam
+
+接口url：/startexam/{{examId}}
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| examId        | string   | 考试id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+
+
+#### 2.4.3 addPaper
+
+接口url：/addpaper
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| paperUser     | string   | 考试者       |
+| paperLink     | string   | 考试id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
