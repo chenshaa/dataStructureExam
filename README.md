@@ -2,8 +2,8 @@
 
 ## 0、feature
 
-- [ ] 图片采用base64储存
-- [ ] 题目采用markdown格式
+- [x] 图片采用base64储存
+- [x] 题目采用markdown格式
 
 ## 1、数据库设计
 
@@ -22,6 +22,78 @@ CREATE TABLE `user`  (
   PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 ```
+
+Exam
+
+```sql
+CREATE TABLE `exam`  (
+  `exam_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '主id',
+  `exam_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '考试名称',
+  `exam_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '考试描述',
+  `exam_create_time` bigint(20) NULL DEFAULT NULL COMMENT '考试创建时间',
+  `exam_update_time` bigint(20) NULL DEFAULT NULL COMMENT '考试更新时间',
+  `exam_start_time` bigint(20) NULL DEFAULT NULL COMMENT '考试开始时间',
+  `exam_end_time` bigint(20) NULL DEFAULT NULL COMMENT '考试结束时间',
+  PRIMARY KEY (`exam_id`) USING BTREE
+) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+```
+
+Paper
+
+```sql
+DROP TABLE IF EXISTS `paper`;
+CREATE TABLE `paper`  (
+  `paper_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷id',
+  `paper_user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷答题人',
+  `paper_link` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '试卷所属的考试',
+  `paper_time_join` bigint(20) NULL DEFAULT NULL COMMENT '参加考试的时间，填写后代表已经参加考试',
+  `paper_time_update` bigint(20) NULL DEFAULT NULL COMMENT '提交答案时间，填写后代表已经提交答案',
+  `paper_score_full` int(11) NULL DEFAULT NULL COMMENT '满分',
+  `paper_score_actual` int(11) NULL DEFAULT NULL COMMENT '得分',
+  PRIMARY KEY (`paper_id`) USING BTREE
+) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+```
+
+Question
+
+```sql
+DROP TABLE IF EXISTS `question`;
+CREATE TABLE `question`  (
+  `question_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '题目d',
+  `question_text` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '题目内容',
+  `question_picture` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '题目图片，采用base64编码',
+  `question_score` int(16) NOT NULL COMMENT '题目分值',
+  `question_type` int(8) NOT NULL COMMENT '题目类型，定义0为单选，1为多选，2为不定项选择，3为填空，4为判断，5为简答，6为综合题',
+  `question_link` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '题目属于哪一张试卷',
+  `question_opinion_1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '题目的第一个选项，可以为空',
+  `question_opinion_2` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `question_opinion_3` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `question_opinion_4` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `question_opinion_5` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `question_right_choice` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '选择类为选项编号，用-连接；填空，简答选择第一个选项。内容未null表示无法自动判断。',
+  `question_create_time` bigint(20) NULL DEFAULT NULL COMMENT '题目创建时间',
+  `question_update_time` bigint(20) NULL DEFAULT NULL COMMENT '题目更新时间',
+  PRIMARY KEY (`question_id`) USING BTREE
+) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+```
+
+Question_collect
+
+```sql
+DROP TABLE IF EXISTS `question_collect`;
+CREATE TABLE `question_collect`  (
+  `collect_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'id',
+  `collect_link_paper` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联到的试卷',
+  `collect_link_question` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '关联到的题目',
+  `collect_text` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '答题内容',
+  `collect_score` int(11) NULL DEFAULT NULL COMMENT '得分',
+  PRIMARY KEY (`collect_id`) USING BTREE
+) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+```
+
+
 
 
 
@@ -107,8 +179,6 @@ OBJECT_EXISTS(409,"对象已经存在");
 ```
 
 
-
-#### 2.1.2  
 
 ### 2.2 Exam
 
@@ -298,7 +368,7 @@ NO_PERMISSION(401,"无访问权限"),
 
 接口url：/startexam/{{examId}}
 
-请求方式：POST
+请求方式：GET
 
 请求参数：
 
@@ -335,6 +405,60 @@ NO_PERMISSION(401,"无访问权限"),
 | authorization | string   | Bearer token |
 | paperUser     | string   | 考试者       |
 | paperLink     | string   | 考试id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.4 getPaper
+
+接口url：/getpaper/{examid}
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| examid        | string   | 考试id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.3 updateOne
+
+接口url：/updateone
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称       | 参数类型 | 说明         |
+| -------------- | -------- | ------------ |
+| authorization  | string   | Bearer token |
+| questionId     | string   | 问题id       |
+| examId         | string   | 考试id       |
+| questionAnswer | String   | 作答         |
 
 返回数据：
 

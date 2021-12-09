@@ -3,7 +3,8 @@ package com.chensha.exam.vo;
 import lombok.Data;
 
 @Data
-public class QuestionVo {
+public class QuestionLiteVo {
+
     /**
      * 题目d
      */
@@ -30,11 +31,6 @@ public class QuestionVo {
     private Integer questionType;
 
     /**
-     * 题目属于哪一张试卷
-     */
-    private String questionLink;
-
-    /**
      * 题目的第一个选项，可以为空
      */
     private String questionOpinion1;
@@ -46,10 +42,5 @@ public class QuestionVo {
     private String questionOpinion4;
 
     private String questionOpinion5;
-
-    /**
-     * 选择类为选项编号，用-连接；填空，简答选择第一个选项。内容未null表示无法自动判断。
-     */
-    private String questionRightChoice;
 
 }
