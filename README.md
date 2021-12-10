@@ -105,16 +105,18 @@ CREATE TABLE `question_collect`  (
 
 #### 2.1.1 login
 
+描述：通用登录接口
+
 接口url：/login
 
 请求方式：POST
 
 请求参数：
 
-| 参数名称 | 参数类型 | 说明 |
-| -------- | -------- | ---- |
-| account  | string   | 账号 |
-| password | string   | 密码 |
+| 参数名称 | 参数类型 | 必填 | 说明 |
+| -------- | -------- | ---- | ---- |
+| account  | string   | √    | 账号 |
+| password | string   | √    | 密码 |
 
 返回数据：
 
@@ -140,9 +142,9 @@ ERROR_USERNAME(453,"用户名/密码错误"),
 //如你所见
 ```
 
-
-
 #### 2.1.2 addUser
+
+描述：由管理员增加用户
 
 接口url：/adduser
 
@@ -150,13 +152,13 @@ ERROR_USERNAME(453,"用户名/密码错误"),
 
 请求参数：
 
-| 参数名称     | 参数类型 | 说明                                    |
-| ------------ | -------- | --------------------------------------- |
-| token        | string   | 令牌                                    |
-| account      | string   | 账号                                    |
-| password     | string   | 密码                                    |
-| userNickname | string   | 昵称                                    |
-| userGroup    | int      | 权限组，0为管理员，1为老师，2为普通用户 |
+| 参数名称     | 参数类型 | 必填 | 说明                                    |
+| ------------ | -------- | ---- | --------------------------------------- |
+| token        | string   | √    | 令牌                                    |
+| account      | string   | √    | 账号                                    |
+| password     | string   | √    | 密码                                    |
+| userNickname | string   | √    | 昵称                                    |
+| userGroup    | int      | √    | 权限组，0为管理员，1为老师，2为普通用户 |
 
 返回数据：
 
@@ -186,15 +188,19 @@ OBJECT_EXISTS(409,"对象已经存在");
 
 #### 2.2.1 listExam
 
+描述：由管理员或者教师列出所有考试
+
+todo：根据Group鉴权
+
 接口url：/listexam
 
 请求方式：GET
 
 请求参数：
 
-| 参数名称      | 参数类型 | 说明         |
-| ------------- | -------- | ------------ |
-| authorization | string   | Bearer token |
+| 参数名称      | 参数类型 | 必填 | 说明         |
+| ------------- | -------- | ---- | ------------ |
+| authorization | string   | √    | Bearer token |
 
 返回数据：
 
@@ -233,19 +239,21 @@ NO_PERMISSION(401,"无访问权限"),
 
 #### 2.2.2 addExam
 
+描述：由管理员或者教师增加一场考试
+
 接口url：/addexam
 
 请求方式：POST
 
 请求参数：
 
-| 参数名称        | 参数类型 | 说明                     |
-| --------------- | -------- | ------------------------ |
-| authorization   | string   | Bearer token             |
-| examName        | string   | 考试名称                 |
-| examDescription | string   | 考试描述                 |
-| examStartTime   | string   | 考试开始时间，Unix时间戳 |
-| examEndTime     | string   | 考试结束时间，同上       |
+| 参数名称        | 参数类型 | 必填 | 说明                     |
+| --------------- | -------- | ---- | ------------------------ |
+| authorization   | string   | √    | Bearer token             |
+| examName        | string   | √    | 考试名称                 |
+| examDescription | string   | √    | 考试描述                 |
+| examStartTime   | string   |      | 考试开始时间，Unix时间戳 |
+| examEndTime     | string   |      | 考试结束时间，同上       |
 
 返回数据：
 
@@ -265,6 +273,44 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 OBJECT_EXISTS(409,"对象已经存在"),
 //已存在同名考试
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
+```
+
+#### 2.2.3 endExam
+
+描述：由管理员或者教师结束一场考试
+
+接口url：/endexam/{examid}/{timestamp}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 必填 | 说明                     |
+| ------------- | -------- | ---- | ------------------------ |
+| authorization | string   | √    | Bearer token             |
+| examid        | string   | √    | 考试id                   |
+| timestamp     | long     |      | 结束时间戳，为空则为现在 |
+
+返回数据：
+
+~~~json
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
 ```
 
 

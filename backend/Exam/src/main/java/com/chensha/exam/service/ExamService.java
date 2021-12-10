@@ -7,4 +7,6 @@ public interface ExamService {
     Result listExam(String authHeader);
 
     Result addExam(String authHeader, ExamParams examParams);
+
+    Result endExam(String examId,Long timestamp, String authHeader);
 }

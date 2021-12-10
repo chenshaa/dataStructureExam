@@ -42,8 +42,7 @@ public class ExamServiceImpl implements ExamService {
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
-        if(examParams == null || StringUtils.isBlank(examParams.getExamName()) || StringUtils.isBlank(examParams.getExamDescription())
-                || examParams.getExamEndTime() == 0 || examParams.getExamStartTime() == 0){
+        if(examParams == null || StringUtils.isBlank(examParams.getExamName()) || StringUtils.isBlank(examParams.getExamDescription())){
             return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
         }
 
@@ -56,6 +55,30 @@ public class ExamServiceImpl implements ExamService {
         exam.setExamCreateTime(System.currentTimeMillis());
         exam.setExamUpdateTime(System.currentTimeMillis());
         examMapper.insert(exam);
+        return Result.success("成功");
+    }
+
+    @Override
+    public Result endExam(String examId,Long timestamp, String authHeader) {
+        if(sysUserService.authToken(authHeader)==null){
+            return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
+        }
+
+        if(StringUtils.isBlank(examId)){
+            return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
+        }
+
+        Exam exam = getExamById(examId);
+        if(exam == null ){
+            return Result.fail(ErrorCode.OBJECT_EXISTS.getCode(),ErrorCode.OBJECT_EXISTS.getMsg());
+        }
+        Long time = timestamp;
+        if(timestamp == null){
+            time = System.currentTimeMillis();
+        }
+
+        exam.setExamEndTime(time);
+        examMapper.updateById(exam);
         return Result.success("成功");
     }
 
@@ -72,6 +95,14 @@ public class ExamServiceImpl implements ExamService {
     public Exam getExamByName(String name){
         LambdaQueryWrapper<Exam> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Exam::getExamName,name);
+        queryWrapper.last("limit 1");
+
+        return (examMapper.selectOne(queryWrapper));
+    }
+
+    public Exam getExamById(String examId){
+        LambdaQueryWrapper<Exam> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Exam::getExamId,examId);
         queryWrapper.last("limit 1");
 
         return (examMapper.selectOne(queryWrapper));
