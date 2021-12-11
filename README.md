@@ -277,11 +277,13 @@ ERROR_PARAMETER(452,"参数错误"),
 //有必填项未填写
 ```
 
-#### 2.2.3 endExam
+
+
+#### 2.2.3 setExamEnd
 
 描述：由管理员或者教师结束一场考试
 
-接口url：/endexam/{examid}/{timestamp}
+接口url：/setexamend/{examid}/{timestamp}
 
 请求方式：GET
 
@@ -311,6 +313,48 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 ERROR_PARAMETER(452,"参数错误"),
 //有必填项未填写
+OBJECT_MISSED(404,"不存在的对象"),
+//不存在的考试
+```
+
+
+
+#### 2.2.4 setExamStart
+
+描述：由管理员或者教师开始一场考试
+
+接口url：/setexamstart/{examid}/{timestamp}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 必填 | 说明                     |
+| ------------- | -------- | ---- | ------------------------ |
+| authorization | string   | √    | Bearer token             |
+| examid        | string   | √    | 考试id                   |
+| timestamp     | long     |      | 开始时间戳，为空则为现在 |
+
+返回数据：
+
+~~~json
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
+OBJECT_MISSED(404,"不存在的对象"),
+//不存在的考试
 ```
 
 
@@ -321,20 +365,70 @@ ERROR_PARAMETER(452,"参数错误"),
 
 #### 2.3.1 listQuestion
 
+描述：管理员或教师列出所有题目
+
 接口url：/listques
 
 请求方式：GET
 
 请求参数：
 
-| 参数名称      | 参数类型 | 说明         |
-| ------------- | -------- | ------------ |
-| authorization | string   | Bearer token |
+| 参数名称      | 参数类型 | 必填 | 说明         |
+| ------------- | -------- | ---- | ------------ |
+| authorization | string   | √    | Bearer token |
 
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": [
+        {
+            "questionId": "1469577443713650690",
+            "questionText": "测试测试测试选A",
+            "questionPicture": null,
+            "questionScore": 3,
+            "questionType": 0,
+            "questionLink": "1467830221552652290",
+            "questionOpinion1": "选项1",
+            "questionOpinion2": "选项2",
+            "questionOpinion3": "选项3",
+            "questionOpinion4": "选项4",
+            "questionOpinion5": null,
+            "questionRightChoice": "1"
+        },
+        {
+            "questionId": "1469581767806226434",
+            "questionText": "测试测试测试选A",
+            "questionPicture": null,
+            "questionScore": 3,
+            "questionType": 0,
+            "questionLink": "1469578484903481345",
+            "questionOpinion1": "选项1",
+            "questionOpinion2": "选项2",
+            "questionOpinion3": "选项3",
+            "questionOpinion4": "选项4",
+            "questionOpinion5": null,
+            "questionRightChoice": "1"
+        },
+        {
+            "questionId": "1469592620932681729",
+            "questionText": "多选测试测试测试选AD",
+            "questionPicture": null,
+            "questionScore": 3,
+            "questionType": 1,
+            "questionLink": "1469578484903481345",
+            "questionOpinion1": "选项1",
+            "questionOpinion2": "选项2",
+            "questionOpinion3": "选项3",
+            "questionOpinion4": "选项4",
+            "questionOpinion5": null,
+            "questionRightChoice": "1-4"
+        }
+    ]
+}
 ~~~
 
 失败返回数据：
@@ -344,32 +438,39 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 ```
 
-#### 2.2.2 addExam
+#### 2.2.2 addQuestion
 
-接口url：/addexam
+描述：由管理员或教师添加一道题目
+
+接口url：/addques
 
 请求方式：POST
 
 请求参数：
 
-| 参数名称            | 参数类型 | 说明                                                         |
-| ------------------- | -------- | ------------------------------------------------------------ |
-| authorization       | string   | Bearer token                                                 |
-| questionText        | string   | 题目                                                         |
-| questionPicture     | int      | 分值                                                         |
-| questionScore       | int      | 题目类型<br/>定义0为单选，1为多选，2为不定项选择，3为填空，4为判断，5为简答，6为综合题 |
-| questionLink        | string   | 关联试卷，用于将题目关联至试卷，可以为空                     |
-| questionOpinion1    | string   | 选项1<br/>单、多、不定项选择按需填写，判断填写前两项<br/>填空、简答、综合题无需填写 |
-| questionOpinion2    | string   | 同上                                                         |
-| questionOpinion3    | string   | 同上                                                         |
-| questionOpinion4    | string   | 同上                                                         |
-| questionOpinion5    | string   | 同上                                                         |
-| questionRightChoice | string   | 题目答案<br/>填写选项时在此填写正确选项，多项正确时用-连接   |
+| 参数名称            | 参数类型 | 必填 | 说明                                                         |
+| ------------------- | -------- | ---- | ------------------------------------------------------------ |
+| authorization       | string   | √    | Bearer token                                                 |
+| questionText        | string   | √    | 题目                                                         |
+| questionPicture     | int      |      | 题目图片                                                     |
+| questionScore       | int      | √    | 题目类型<br/>定义0为单选，1为多选，2为不定项选择，3为填空，4为判断，5为简答，6为综合题 |
+| questionLink        | string   |      | 关联试卷，用于将题目关联至试卷，可以为空                     |
+| questionOpinion1    | string   |      | 选项1<br/>单、多、不定项选择按需填写，判断填写前两项<br/>填空、简答、综合题无需填写 |
+| questionOpinion2    | string   |      | 同上                                                         |
+| questionOpinion3    | string   |      | 同上                                                         |
+| questionOpinion4    | string   |      | 同上                                                         |
+| questionOpinion5    | string   |      | 同上                                                         |
+| questionRightChoice | string   |      | 题目答案<br/>填写选项时在此填写正确选项，多项正确时用-连接   |
 
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
 ~~~
 
 失败返回数据：
@@ -377,6 +478,9 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
+
 ```
 
 
@@ -386,6 +490,8 @@ NO_PERMISSION(401,"无访问权限"),
 接口url：/paper
 
 #### 2.4.1 listMyExam
+
+描述：学生查询自己的考试
 
 接口url：/listmyexam
 
@@ -400,17 +506,39 @@ NO_PERMISSION(401,"无访问权限"),
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": [
+        {
+            "examId": "1469578484903481345",
+            "examName": "数据结构-4",
+            "examDescription": "用来测试的考试",
+            "examStartTime": 1639210555563,
+            "examEndTime": null
+        },
+        {
+            "examId": "1467830221552652290",
+            "examName": "数据结构-1",
+            "examDescription": "用来测试的考试",
+            "examStartTime": 1638693549256,
+            "examEndTime": 1638693559256
+        }
+    ]
+}
 ~~~
 
 失败返回数据：
 
 ```java
 NO_PERMISSION(401,"无访问权限"),
-//未提交token/token无效/token权限不足
+//未提交token/token无效
 ```
 
 #### 2.4.2 startExam
+
+描述：学生开始一场考试
 
 接口url：/startexam/{{examId}}
 
@@ -425,9 +553,39 @@ NO_PERMISSION(401,"无访问权限"),
 
 返回数据：
 
-~~~json
-
-~~~
+```json
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": [
+        {
+            "questionId": "1469581767806226434",
+            "questionText": "测试测试测试选A",
+            "questionPicture": null,
+            "questionScore": 3,
+            "questionType": 0,
+            "questionOpinion1": "选项1",
+            "questionOpinion2": "选项2",
+            "questionOpinion3": "选项3",
+            "questionOpinion4": "选项4",
+            "questionOpinion5": null
+        },
+        {
+            "questionId": "1469592620932681729",
+            "questionText": "多选测试测试测试选AD",
+            "questionPicture": null,
+            "questionScore": 3,
+            "questionType": 1,
+            "questionOpinion1": "选项1",
+            "questionOpinion2": "选项2",
+            "questionOpinion3": "选项3",
+            "questionOpinion4": "选项4",
+            "questionOpinion5": null
+        }
+    ]
+}
+```
 
 失败返回数据：
 
@@ -440,22 +598,29 @@ NO_PERMISSION(401,"无访问权限"),
 
 #### 2.4.3 addPaper
 
+描述：由管理员或教师添加一张试卷
+
 接口url：/addpaper
 
 请求方式：POST
 
 请求参数：
 
-| 参数名称      | 参数类型 | 说明         |
-| ------------- | -------- | ------------ |
-| authorization | string   | Bearer token |
-| paperUser     | string   | 考试者       |
-| paperLink     | string   | 考试id       |
+| 参数名称      | 参数类型 | 必填 | 说明           |
+| ------------- | -------- | ---- | -------------- |
+| authorization | string   | √    | Bearer token   |
+| paperUser     | string   | √    | 考试者         |
+| paperLink     | string   | √    | 考试id(examId) |
 
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
 ~~~
 
 失败返回数据：
@@ -463,13 +628,15 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
 ```
 
 #### 2.4.4 getPaper
 
 接口url：/getpaper/{examid}
 
-请求方式：POST
+请求方式：GET
 
 请求参数：
 

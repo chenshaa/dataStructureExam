@@ -14,4 +14,6 @@ public interface PaperService {
     Result getPaper(String examId, String authHeader);
 
     Result updateOne(UpdateQuesParams updateQuesParams, String authHeader);
+
+    Result autoCorrect(String examId, String authHeader);
 }

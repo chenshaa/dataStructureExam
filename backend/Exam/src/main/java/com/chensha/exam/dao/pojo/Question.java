@@ -1,10 +1,9 @@
 package com.chensha.exam.dao.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 @Data
 public class Question {
@@ -44,14 +43,19 @@ public class Question {
     /**
      * 题目的第一个选项，可以为空
      */
+    @TableField(value = "question_opinion_1")
     private String questionOpinion1;
 
+    @TableField(value = "question_opinion_2")
     private String questionOpinion2;
 
+    @TableField(value = "question_opinion_3")
     private String questionOpinion3;
 
+    @TableField(value = "question_opinion_4")
     private String questionOpinion4;
 
+    @TableField(value = "question_opinion_5")
     private String questionOpinion5;
 
     /**

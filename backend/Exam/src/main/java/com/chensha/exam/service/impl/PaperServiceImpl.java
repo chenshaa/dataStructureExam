@@ -38,13 +38,13 @@ public class PaperServiceImpl implements PaperService {
 
     @Override
     public Result listMyExam(String authHeader) {
-        String owner = sysUserService.authToken(authHeader);
-        if(owner==null){
+        String account = JWTUtils.getAccount(authHeader.substring(7));
+        if(account==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
-
+        String userid = sysUserService.getIdByAccount(account);
         LambdaQueryWrapper<Paper> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Paper::getPaperUser,owner);
+        queryWrapper.eq(Paper::getPaperUser,userid);
         List<Paper> paperList = paperMapper.selectList(queryWrapper);
 
         List<ExamVo> examVoList = new ArrayList<>();
@@ -63,7 +63,8 @@ public class PaperServiceImpl implements PaperService {
         }
 
         String owner = JWTUtils.getAccount(authHeader.substring(7));
-        Paper paper = sysPaperService.getPaperByExamId(examId,owner);
+        String userId = sysUserService.getIdByAccount(owner);
+        Paper paper = sysPaperService.getPaperByExamId(examId,userId);
 
         //校验是否已经开始
 
@@ -76,8 +77,8 @@ public class PaperServiceImpl implements PaperService {
     @Override
     public Result addPaper(PaperParams paperParams, String authHeader) {
         String owner = JWTUtils.getAccount(authHeader.substring(7));
-        if (StringUtils.isEmpty(owner) || paperParams != null ||
-                StringUtils.isEmpty(paperParams.getPaperLink()) || StringUtils.isEmpty(paperParams.getPaperUser())) {
+        if ( paperParams == null || StringUtils.isEmpty(paperParams.getPaperLink()) ||
+                StringUtils.isEmpty(paperParams.getPaperUser())) {
             return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
         }
 
@@ -94,6 +95,10 @@ public class PaperServiceImpl implements PaperService {
         if (StringUtils.isBlank(examId)) {
             return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
         }
+
+
+        String owner = JWTUtils.getAccount(authHeader.substring(7));
+        String userId = sysUserService.getIdByAccount(owner);
 
         return Result.success(sysPaperService.getQuesLiteVoByExamId(examId));
     }
@@ -113,6 +118,12 @@ public class PaperServiceImpl implements PaperService {
 
         questionCollectMapper.insert(questionCollect);
         return Result.success("成功");
+    }
+
+    @Override
+    public Result autoCorrect(String examId, String authHeader) {
+
+        return null;
     }
 
 

@@ -27,7 +27,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public Result listExam(String authHeader) {
-        if(sysUserService.authToken(authHeader)==null){
+        if(sysUserService.authTokenAdmin(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
@@ -38,7 +38,7 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public Result addExam(String authHeader, ExamParams examParams) {
-        if(sysUserService.authToken(authHeader)==null){
+        if(sysUserService.authTokenAdmin(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
@@ -59,8 +59,8 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public Result endExam(String examId,Long timestamp, String authHeader) {
-        if(sysUserService.authToken(authHeader)==null){
+    public Result setExamEnd(String examId, Long timestamp, String authHeader) {
+        if(sysUserService.authTokenAdmin(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
@@ -70,7 +70,7 @@ public class ExamServiceImpl implements ExamService {
 
         Exam exam = getExamById(examId);
         if(exam == null ){
-            return Result.fail(ErrorCode.OBJECT_EXISTS.getCode(),ErrorCode.OBJECT_EXISTS.getMsg());
+            return Result.fail(ErrorCode.OBJECT_MISSED.getCode(),ErrorCode.OBJECT_MISSED.getMsg());
         }
         Long time = timestamp;
         if(timestamp == null){
@@ -78,6 +78,30 @@ public class ExamServiceImpl implements ExamService {
         }
 
         exam.setExamEndTime(time);
+        examMapper.updateById(exam);
+        return Result.success("成功");
+    }
+
+    @Override
+    public Result setExamStart(String examId, Long timestamp, String authHeader) {
+        if(sysUserService.authTokenAdmin(authHeader)==null){
+            return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
+        }
+
+        if(StringUtils.isBlank(examId)){
+            return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
+        }
+
+        Exam exam = getExamById(examId);
+        if(exam == null ){
+            return Result.fail(ErrorCode.OBJECT_MISSED.getCode(),ErrorCode.OBJECT_MISSED.getMsg());
+        }
+        Long time = timestamp;
+        if(timestamp == null){
+            time = System.currentTimeMillis();
+        }
+
+        exam.setExamStartTime(time);
         examMapper.updateById(exam);
         return Result.success("成功");
     }

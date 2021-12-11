@@ -3,7 +3,6 @@ package com.chensha.exam.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.chensha.exam.dao.mapper.QuestionMapper;
-import com.chensha.exam.dao.pojo.Exam;
 import com.chensha.exam.dao.pojo.Question;
 import com.chensha.exam.service.QuestionService;
 import com.chensha.exam.service.SysUserService;
@@ -28,7 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Result listQues(String authHeader) {
-        if(sysUserService.authToken(authHeader)==null){
+        if(sysUserService.authTokenAdmin(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
@@ -39,18 +38,19 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Result addQues(String authHeader, QuestionParams questionParams) {
-        if(sysUserService.authToken(authHeader)==null){
+        if(sysUserService.authTokenAdmin(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
         if(questionParams == null || StringUtils.isBlank(questionParams.getQuestionText())
-                || questionParams.getQuestionScore() == 0 || questionParams.getQuestionType() == 0){
+                || questionParams.getQuestionScore() == null || questionParams.getQuestionType() == null){
             return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
         }
 
+        /*题目就不判重了
         if(getQuestionByName(questionParams.getQuestionText()) != null ){
             return Result.fail(ErrorCode.OBJECT_EXISTS.getCode(),ErrorCode.OBJECT_EXISTS.getMsg());
-        }
+        }*/
 
         //对需要答案的题型进一步校验
         int questionType = questionParams.getQuestionType();

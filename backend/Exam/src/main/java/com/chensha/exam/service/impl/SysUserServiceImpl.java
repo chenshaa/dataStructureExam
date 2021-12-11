@@ -51,7 +51,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public String authToken(String authHeader) {
+    public String authTokenAdmin(String authHeader) {
         String token = authHeader.substring(7);
         String account = JWTUtils.getAccount(token);
         int userGroup = getGroupByAccount(account);
@@ -60,4 +60,14 @@ public class SysUserServiceImpl implements SysUserService {
         }
         return token;
     }
+
+    @Override
+    public String getIdByAccount(String account) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserAccount,account);
+        queryWrapper.last("limit 1");
+
+        return (userMapper.selectOne(queryWrapper).getUserId());
+    }
+
 }

@@ -8,5 +8,7 @@ public interface ExamService {
 
     Result addExam(String authHeader, ExamParams examParams);
 
-    Result endExam(String examId,Long timestamp, String authHeader);
+    Result setExamEnd(String examId, Long timestamp, String authHeader);
+
+    Result setExamStart(String examId, Long timestamp, String authHeader);
 }

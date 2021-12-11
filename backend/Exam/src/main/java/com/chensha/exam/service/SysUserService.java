@@ -12,5 +12,7 @@ public interface SysUserService {
 
     int getGroupByAccount(String account);
 
-    public String authToken(String authHeader);
+    public String authTokenAdmin(String authHeader);
+
+    String getIdByAccount(String account);
 }

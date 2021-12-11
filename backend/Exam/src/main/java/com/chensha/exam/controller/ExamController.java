@@ -25,9 +25,17 @@ public class ExamController {
         return examService.addExam(authHeader,examParams);
     }
 
-    @GetMapping(value = {"/endexam/{examid}/{timestamp}","/endexam/{examid}","/endexam"})
-    public Result endExam(@PathVariable(required = false,name = "examid") String examid,@PathVariable(required = false,name = "timestamp") Long timestamp
+    @GetMapping(value = {"/setexamend/{examid}/{timestamp}","/setexamend/{examid}","/setexamend"})
+    public Result setExamEnd(@PathVariable(required = false,name = "examid") String examid,@PathVariable(required = false,name = "timestamp") Long timestamp
             ,@RequestHeader("Authorization") String authHeader){
-        return examService.endExam(examid,timestamp,authHeader);
+        return examService.setExamEnd(examid,timestamp,authHeader);
     }
+
+    @GetMapping(value = {"/setexamstart/{examid}/{timestamp}","/setexamstart/{examid}","/setexamstart"})
+    public Result setExamStart(@PathVariable(required = false,name = "examid") String examid,@PathVariable(required = false,name = "timestamp") Long timestamp
+            ,@RequestHeader("Authorization") String authHeader){
+        return examService.setExamStart(examid,timestamp,authHeader);
+    }
+
+
 }

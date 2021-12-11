@@ -13,16 +13,6 @@ public class PaperController {
     @Autowired
     public PaperService paperService;
 
-    @GetMapping("listmyexam")
-    public Result listMyExam(@RequestHeader("Authorization")String authHeader) {
-        return paperService.listMyExam(authHeader);
-    }
-
-    @GetMapping("Startexam/{examid}")
-    public Result startExam(@PathVariable("examid") String examId,@RequestHeader("Authorization")String authHeader){
-        return paperService.startExam(examId, authHeader);
-    }
-
     @PostMapping("addpaper")
     public Result addPaper(@RequestBody PaperParams paperParams, @RequestHeader("Authorization")String authHeader){
         return paperService.addPaper(paperParams, authHeader);
@@ -36,5 +26,20 @@ public class PaperController {
     @PostMapping("updateone")
     public Result updateOne(@RequestBody UpdateQuesParams updateQuesParams, @RequestHeader("Authorization")String authHeader){
         return paperService.updateOne(updateQuesParams, authHeader);
+    }
+
+    @GetMapping("listmyexam")
+    public Result listMyExam(@RequestHeader("Authorization")String authHeader) {
+        return paperService.listMyExam(authHeader);
+    }
+
+    @GetMapping("Startexam/{examid}")
+    public Result startExam(@PathVariable("examid") String examId,@RequestHeader("Authorization")String authHeader){
+        return paperService.startExam(examId, authHeader);
+    }
+
+    @GetMapping(value = {"/autocorrect/{examid}","/autocorrect" })
+    public Result autoCorrect(@PathVariable(required = false,name = "examid") String examId,@RequestHeader("Authorization") String authHeader){
+        return paperService.autoCorrect(examId,authHeader);
     }
 }
