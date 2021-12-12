@@ -46,13 +46,23 @@ public class SysPaperServiceImpl implements SysPaperService {
         return examMapper.selectOne(queryWrapper);
     }
 
-    public Paper getPaperByExamId(String examId, String owner){
+    public Paper getPaperByExamId(String examId, String userId){
         LambdaQueryWrapper<Paper> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Paper::getPaperLink,examId);
+        queryWrapper.eq(Paper ::getPaperUser,userId);
         queryWrapper.last("limit 1");
 
         return paperMapper.selectOne(queryWrapper);
     }
+
+    public List<Paper> getPaperListByExamId(String examId){
+        LambdaQueryWrapper<Paper> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Paper::getPaperLink,examId);
+        queryWrapper.last("limit 1");
+
+        return paperMapper.selectList(queryWrapper);
+    }
+
 
     public List<QuestionLiteVo> getQuesLiteVoByExamId(String examId){
         LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();

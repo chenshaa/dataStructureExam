@@ -7,4 +7,6 @@ public interface QuestionService {
     Result listQues(String authHeader);
 
     Result addQues(String authHeader, QuestionParams questionParams);
+
+    public int getQuesTypeById(String id);
 }

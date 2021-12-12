@@ -8,13 +8,15 @@ import com.chensha.exam.vo.QuestionLiteVo;
 import java.util.List;
 
 public interface SysPaperService {
-    public ExamVo getExamVoById(String id);
+    ExamVo getExamVoById(String id);
 
-    public Exam getExamById(String id);
+    Exam getExamById(String id);
 
-    public Paper getPaperByExamId(String examId, String owner);
+    Paper getPaperByExamId(String examId, String owner);
 
-    public List<QuestionLiteVo> getQuesLiteVoByExamId(String examId);
+    List<QuestionLiteVo> getQuesLiteVoByExamId(String examId);
 
     String getPaperIdByExamID(String examId);
+
+    List<Paper> getPaperListByExamId(String examId);
 }

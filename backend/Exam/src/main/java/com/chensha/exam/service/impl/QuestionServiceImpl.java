@@ -87,4 +87,12 @@ public class QuestionServiceImpl implements QuestionService {
 
         return (questionMapper.selectOne(queryWrapper));
     }
+
+    public int getQuesTypeById(String id){
+        LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Question::getQuestionId,id);
+        queryWrapper.last("limit 1");
+
+        return (questionMapper.selectOne(queryWrapper).getQuestionType());
+    }
 }

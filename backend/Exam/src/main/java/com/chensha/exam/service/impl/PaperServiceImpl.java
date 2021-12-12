@@ -6,6 +6,7 @@ import com.chensha.exam.dao.mapper.PaperMapper;
 import com.chensha.exam.dao.mapper.QuestionCollectMapper;
 import com.chensha.exam.dao.mapper.QuestionMapper;
 import com.chensha.exam.dao.pojo.Paper;
+import com.chensha.exam.dao.pojo.Question;
 import com.chensha.exam.dao.pojo.QuestionCollect;
 import com.chensha.exam.service.PaperService;
 import com.chensha.exam.service.SysPaperService;
@@ -35,6 +36,7 @@ public class PaperServiceImpl implements PaperService {
     public QuestionMapper questionMapper;
     @Autowired
     public QuestionCollectMapper questionCollectMapper;
+
 
     @Override
     public Result listMyExam(String authHeader) {
@@ -122,9 +124,69 @@ public class PaperServiceImpl implements PaperService {
 
     @Override
     public Result autoCorrect(String examId, String authHeader) {
+        //认证
+
+        List<Paper> paperList=sysPaperService.getPaperListByExamId(examId);
+        for (Paper paper : paperList) {
+            LambdaQueryWrapper<QuestionCollect> lambdaQueryWrap= new LambdaQueryWrapper<>();
+            lambdaQueryWrap.eq(QuestionCollect::getCollectLinkPaper,paper.getPaperId());
+            List<QuestionCollect> quesList=questionCollectMapper.selectList(lambdaQueryWrap);
+
+            //以后升级redis
+            for(QuestionCollect ques : quesList){
+                LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(Question::getQuestionId,ques.getCollectLinkQuestion());
+                queryWrapper.last("limit 1");
+
+                Question answer=questionMapper.selectOne(queryWrapper);
+                int quesType = answer.getQuestionType();
+                int fullMark = answer.getQuestionScore();
+                if (quesType == 0 || quesType == 1 ||quesType == 2) {
+                    if(judgeQues(ques.getCollectText(), answer.getQuestionRightChoice())){
+                        //正确
+                        setScore(ques.getCollectId(),fullMark);
+                    }else {
+                        //错误
+                        setScore(ques.getCollectId(),0);
+                    }
+                }
+
+            }
+        }
 
         return null;
     }
 
 
+    public boolean judgeQues(String text,String answer){
+        String[] textSplit  = text.split("-");
+        String[] answerSplit = answer.split("-");
+
+        if(answerSplit != null && textSplit != null && textSplit.length == answerSplit.length){
+
+            for (int i = 0; i < answerSplit.length-1; i++) {
+                boolean flag = false;
+                for (int j = 0; j < textSplit.length-1; j++){
+                    if (textSplit[j] == answer) {
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (flag == false) {
+                    return false;
+                }
+            }
+
+        }
+    return false;
+    }
+
+    public void setScore(String quesCollectId,int score){
+        QuestionCollect questionCollect = new QuestionCollect();
+        questionCollect.setCollectId(quesCollectId);;
+        questionCollect.setCollectScore(score);
+
+        questionCollectMapper.updateById(questionCollect);
+    }
 }
