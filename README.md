@@ -658,7 +658,7 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 ```
 
-#### 2.4.3 updateOne
+#### 2.4.5 updateOne
 
 接口url：/updateone
 
@@ -672,6 +672,32 @@ NO_PERMISSION(401,"无访问权限"),
 | questionId     | string   | 问题id       |
 | examId         | string   | 考试id       |
 | questionAnswer | String   | 作答         |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.6 autoCorrect
+
+接口url：/autocorrect/{examid}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| examid        | string   | 考试id       |
 
 返回数据：
 
