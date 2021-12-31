@@ -20,8 +20,7 @@ import com.chensha.exam.vo.params.UpdateQuesParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PaperServiceImpl implements PaperService {
@@ -122,28 +121,54 @@ public class PaperServiceImpl implements PaperService {
         return Result.success("成功");
     }
 
+    /**
+     * 自动批改试卷
+     * @param examId 考试id
+     * @param authHeader 认证头
+     * @return null
+     */
     @Override
     public Result autoCorrect(String examId, String authHeader) {
         //认证
 
+        //todo：升级redis
+        //question: questionType, questionFullMark, RightChoice
+        Map<String,List<String>> answerMap = new HashMap<>();
+
         List<Paper> paperList=sysPaperService.getPaperListByExamId(examId);
         for (Paper paper : paperList) {
+            //由试卷枚举每一道题目的答案
             LambdaQueryWrapper<QuestionCollect> lambdaQueryWrap= new LambdaQueryWrapper<>();
             lambdaQueryWrap.eq(QuestionCollect::getCollectLinkPaper,paper.getPaperId());
             List<QuestionCollect> quesList=questionCollectMapper.selectList(lambdaQueryWrap);
 
-            //以后升级redis
             for(QuestionCollect ques : quesList){
-                LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(Question::getQuestionId,ques.getCollectLinkQuestion());
-                queryWrapper.last("limit 1");
+                List<String> answerList;
+                //本地数据集查询
+                if(answerMap.get(ques.getCollectLinkQuestion())!=null){
+                    //存在本地记录
+                    answerList = answerMap.get(ques.getCollectLinkQuestion());
+                }else {
+                    //不存在本地记录
+                    LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(Question::getQuestionId,ques.getCollectLinkQuestion());
+                    queryWrapper.last("limit 1");
+                    Question answer=questionMapper.selectOne(queryWrapper);
 
-                Question answer=questionMapper.selectOne(queryWrapper);
-                int quesType = answer.getQuestionType();
-                int fullMark = answer.getQuestionScore();
-                if (quesType == 0 || quesType == 1 ||quesType == 2) {
-                    if(judgeQues(ques.getCollectText(), answer.getQuestionRightChoice())){
+                    List<String> temp = new ArrayList<>();
+                    temp.add(String.valueOf(answer.getQuestionType()));
+                    temp.add(String.valueOf(answer.getQuestionScore()));
+                    temp.add(answer.getQuestionRightChoice());
+                    answerList = temp;
+                    answerMap.put(ques.getCollectLinkQuestion(), temp);
+                }
+
+                String quesType = answerList.get(0);
+
+                if (Objects.equals(quesType, "0") || Objects.equals(quesType, "1") || Objects.equals(quesType, "2")) {
+                    if(judgeQues(ques.getCollectText(), answerList.get(2))){
                         //正确
+                        int fullMark = Integer.parseInt(answerList.get(1));
                         setScore(ques.getCollectId(),fullMark);
                     }else {
                         //错误
@@ -154,7 +179,7 @@ public class PaperServiceImpl implements PaperService {
             }
         }
 
-        return null;
+        return Result.success("成功");
     }
 
 
@@ -162,10 +187,11 @@ public class PaperServiceImpl implements PaperService {
         String[] textSplit  = text.split("-");
         String[] answerSplit = answer.split("-");
 
-        if(answerSplit != null && textSplit != null && textSplit.length == answerSplit.length){
+        if(textSplit.length == answerSplit.length){
 
             for (int i = 0; i < answerSplit.length-1; i++) {
                 boolean flag = false;
+
                 for (int j = 0; j < textSplit.length-1; j++){
                     if (textSplit[j] == answer) {
                         flag = true;
@@ -173,7 +199,7 @@ public class PaperServiceImpl implements PaperService {
                     }
                 }
 
-                if (flag == false) {
+                if (!flag) {
                     return false;
                 }
             }
@@ -184,7 +210,7 @@ public class PaperServiceImpl implements PaperService {
 
     public void setScore(String quesCollectId,int score){
         QuestionCollect questionCollect = new QuestionCollect();
-        questionCollect.setCollectId(quesCollectId);;
+        questionCollect.setCollectId(quesCollectId);
         questionCollect.setCollectScore(score);
 
         questionCollectMapper.updateById(questionCollect);
