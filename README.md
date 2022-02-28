@@ -152,13 +152,13 @@ ERROR_USERNAME(453,"用户名/密码错误"),
 
 请求参数：
 
-| 参数名称     | 参数类型 | 必填 | 说明                                    |
-| ------------ | -------- | ---- | --------------------------------------- |
-| token        | string   | √    | 令牌                                    |
-| account      | string   | √    | 账号                                    |
-| password     | string   | √    | 密码                                    |
-| userNickname | string   | √    | 昵称                                    |
-| userGroup    | int      | √    | 权限组，0为管理员，1为老师，2为普通用户 |
+| 参数名称      | 参数类型 | 必填 | 说明                                    |
+| ------------- | -------- | ---- | --------------------------------------- |
+| authorization | string   | √    | Bearer token                            |
+| account       | string   | √    | 账号                                    |
+| password      | string   | √    | 密码                                    |
+| userNickname  | string   | √    | 昵称                                    |
+| userGroup     | int      | √    | 权限组，0为管理员，1为老师，2为普通用户 |
 
 返回数据：
 
@@ -180,7 +180,52 @@ OBJECT_EXISTS(409,"对象已经存在");
 //account已经存在
 ```
 
+#### 2.1.2 listStu
 
+描述：由管理员或教师列出学生列表
+
+接口url：/liststu
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 必填 | 说明         |
+| ------------- | -------- | ---- | ------------ |
+| authorization | string   | √    | Bearer token |
+
+返回数据：
+
+~~~json
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": [
+    {
+      "userId": "1498198135105486849",
+      "userAccount": "test",
+      "userNickname": "测试用户",
+      "userGroup": 2
+    },
+    {
+      "userId": "1498198204508635138",
+      "userAccount": "stu1",
+      "userNickname": "学生1",
+      "userGroup": 2
+    }
+  ]
+}
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+2.1.3 listStu
 
 ### 2.2 Exam
 
