@@ -4,7 +4,8 @@ import router from '@/router'
 
 // 创建一个单例（实例）
 const instance = axios.create({
-    baseURL: "http://localhost:8880",
+    //baseURL: "http://localhost:8880",
+    baseURL: "http://exam.zjcs.xyz:80",
     timeout: 4000
 })
 

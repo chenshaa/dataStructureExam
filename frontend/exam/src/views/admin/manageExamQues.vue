@@ -37,15 +37,48 @@
                 <el-table-column type="expand">
                     <template slot-scope="props">
 
-                        <el-descriptions title="题目信息" border :column="4">
-                            <el-descriptions-item label="题目ID">{{props.row.questionId}}</el-descriptions-item>
-                            <el-descriptions-item label="关联考试">{{quesInfo.questionLink}}</el-descriptions-item>
+                        <div class="expandTable">
+                            <el-descriptions title="题目信息" border :column="4">
+                                <el-descriptions-item label="题目ID">{{props.row.questionId}}</el-descriptions-item>
+                                <el-descriptions-item label="关联考试">{{props.row.questionLink}}</el-descriptions-item>
 
-                            <el-descriptions-item label="分值" style='width: 200px;'>{{quesInfo.questionScore}}
-                            </el-descriptions-item>
-                            <el-descriptions-item label="题型">{{quesInfo.questionType}}</el-descriptions-item>
-                        </el-descriptions>
+                                <el-descriptions-item label="分值" style='width: 200px;'>{{props.row.questionScore}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="题型">{{props.row.questionType}}</el-descriptions-item>
+                            </el-descriptions>
 
+                            <el-descriptions title="选项信息" border :column="3">
+                                <el-descriptions-item label="选项1">
+                                    {{props.row.questionOpinion1}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="选项2">
+                                    {{props.row.questionOpinion2}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="选项3">
+                                    {{props.row.questionOpinion3}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="选项4">
+                                    {{props.row.questionOpinion4}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="选项5">
+                                    {{props.row.questionOpinion5}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="     ">
+
+                                </el-descriptions-item>
+                                <el-descriptions-item label="答案">
+                                    <el-tag size="small">{{props.row.questionRightChoice}}</el-tag>
+                                </el-descriptions-item>
+
+                            </el-descriptions>
+
+                            <el-descriptions title="题目" border :column="3">
+                            </el-descriptions>
+
+                            <div v-html="compileMarkDown(props.row.questionText)"></div>
+
+
+                        </div>
                     </template>
                 </el-table-column>
 
@@ -77,7 +110,8 @@
                 <el-form label-width=auto size="small">
 
                     <el-form-item label="选择题目">
-                        <el-select v-model="quesSelectValue" @change="quesSelectChangeFn" filterable placeholder="请选择">
+                        <el-select v-model="quesSelectValue" @change="quesSelectChangeFn" filterable placeholder="请选择"
+                            style="max-width: 100%;">
                             <el-option v-for="item in quesSelectItems" :key="item.questionId" :label="item.questionText"
                                 :value="item.questionId">
                             </el-option>
@@ -120,9 +154,9 @@
 
                     <el-descriptions title="题目" border :column="3">
                     </el-descriptions>
-                    
+
                     <div v-html="compileMarkDown(quesInfo.questionText)"></div>
-                    
+
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false;editMode=false">取 消</el-button>
@@ -268,5 +302,13 @@
 
     .searchInput {
         width: 200px;
+    }
+
+    .el-select-dropdown {
+        max-width: 50%;
+    }
+
+    .expandTable {
+        margin: 40px;
     }
 </style>

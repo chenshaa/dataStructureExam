@@ -280,8 +280,6 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 ```
 
-
-
 #### 2.2.2 addExam
 
 描述：由管理员或者教师增加一场考试
@@ -408,11 +406,11 @@ OBJECT_MISSED(404,"不存在的对象"),
 
 接口url：/ques
 
-#### 2.3.1 listQuestion
+#### 2.3.1 listAllQuestion
 
 描述：管理员或教师列出所有题目
 
-接口url：/listques
+接口url：/listallques
 
 请求方式：GET
 
@@ -483,6 +481,34 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 ```
 
+#### 2.3.2 listQuestionById
+
+描述：管理员或教师根据考试ID列出已经添加的题目
+
+接口url：/listques/{{examId}}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 必填 | 说明         |
+| ------------- | -------- | ---- | ------------ |
+| authorization | string   | √    | Bearer token |
+| examId        | string   | √    | 考试id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
 #### 2.2.2 addQuestion
 
 描述：由管理员或教师添加一道题目
@@ -499,7 +525,7 @@ NO_PERMISSION(401,"无访问权限"),
 | questionText        | string   | √    | 题目                                                         |
 | questionPicture     | int      |      | 题目图片                                                     |
 | questionScore       | int      | √    | 题目类型<br/>定义0为单选，1为多选，2为不定项选择，3为填空，4为判断，5为简答，6为综合题 |
-| questionLink        | string   |      | 关联试卷，用于将题目关联至试卷，可以为空                     |
+| questionLink        | string   |      | 关联试卷，用于将题目关联至一门考试，可以为空                 |
 | questionOpinion1    | string   |      | 选项1<br/>单、多、不定项选择按需填写，判断填写前两项<br/>填空、简答、综合题无需填写 |
 | questionOpinion2    | string   |      | 同上                                                         |
 | questionOpinion3    | string   |      | 同上                                                         |
@@ -528,7 +554,34 @@ ERROR_PARAMETER(452,"参数错误"),
 
 ```
 
+#### 2.3.2 GetQuestionById
 
+描述：根据题目ID得到题目
+
+接口url：/getquesbyid/{{quesId}}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 必填 | 说明         |
+| ------------- | -------- | ---- | ------------ |
+| authorization | string   | √    | Bearer token |
+| quesId        | string   | √    | 题目id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+
+```
+
+#### 
 
 ### 2.4 Paper
 

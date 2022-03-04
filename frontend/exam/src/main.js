@@ -8,12 +8,16 @@ import store from './store'
 import App from './App.vue'
 import router from './router'
 
+import { mavonEditor } from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
+Vue.component("mavon-editor", mavonEditor);
+
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
 
 new Vue({
-  router,
-  store,
-  render: h => h(App),
+    router,
+    store,
+    render: h => h(App),
 }).$mount('#app')

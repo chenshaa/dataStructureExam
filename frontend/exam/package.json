@@ -10,6 +10,8 @@
     "axios": "^0.26.0",
     "core-js": "^2.6.5",
     "element-ui": "^2.15.6",
+    "mavon-editor": "^2.10.4",
+    "showdown": "^2.0.1",
     "vue": "^2.6.10",
     "vue-axios": "^3.4.1",
     "vue-router": "^3.5.3",

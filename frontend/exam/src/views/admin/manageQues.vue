@@ -2,20 +2,7 @@
     <div class="managePaper">
 
         <div style="margin: 10px 0">
-            <el-form :inline="true">
-                <el-form-item label="当前选择的考试场次:">
 
-                    <el-select value-key="examId" v-model="selectValue" @change="selectChangeFn" filterable
-                        placeholder="请选择">
-                        <el-option v-for="item in selectItems" :key="item.examId" :label="item.examName"
-                            :value="item.examId">
-                        </el-option>
-                    </el-select>
-
-                </el-form-item>
-            </el-form>
-
-            <el-divider></el-divider>
 
             <el-input class="searchInput ml-5" placeholder="搜索题目" v-model="input" clearable></el-input>
             <el-button class="ml-5" icon="el-icon-search" circle></el-button>
@@ -36,16 +23,46 @@
                 <!--   展开表格    -->
                 <el-table-column type="expand">
                     <template slot-scope="props">
+                        <div class="expandTable">
+                            <el-descriptions title="题目信息" border :column="4">
+                                <el-descriptions-item label="题目ID">{{props.row.questionId}}</el-descriptions-item>
+                                <el-descriptions-item label="关联考试">{{props.row.questionLink}}</el-descriptions-item>
 
-                        <el-descriptions title="题目信息" border :column="4">
-                            <el-descriptions-item label="题目ID">{{props.row.questionId}}</el-descriptions-item>
-                            <el-descriptions-item label="关联考试">{{quesInfo.questionLink}}</el-descriptions-item>
+                                <el-descriptions-item label="分值" style='width: 200px;'>{{props.row.questionScore}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="题型">{{props.row.questionType}}</el-descriptions-item>
+                            </el-descriptions>
 
-                            <el-descriptions-item label="分值" style='width: 200px;'>{{quesInfo.questionScore}}
-                            </el-descriptions-item>
-                            <el-descriptions-item label="题型">{{quesInfo.questionType}}</el-descriptions-item>
-                        </el-descriptions>
+                            <el-descriptions title="选项信息" border :column="3">
+                                <el-descriptions-item label="选项1">
+                                    {{props.row.questionOpinion1}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="选项2">
+                                    {{props.row.questionOpinion2}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="选项3">
+                                    {{props.row.questionOpinion3}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="选项4">
+                                    {{props.row.questionOpinion4}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="选项5">
+                                    {{props.row.questionOpinion5}}
+                                </el-descriptions-item>
+                                <el-descriptions-item label="     ">
 
+                                </el-descriptions-item>
+                                <el-descriptions-item label="答案">
+                                    <el-tag size="small">{{props.row.questionRightChoice}}</el-tag>
+                                </el-descriptions-item>
+
+                            </el-descriptions>
+
+                            <el-descriptions title="题目" border :column="3">
+                            </el-descriptions>
+
+                            <div v-html="compileMarkDown(props.row.questionText)"></div>
+                        </div>
                     </template>
                 </el-table-column>
 
@@ -76,54 +93,62 @@
                 :close-on-press-escape=false>
                 <el-form label-width=auto size="small">
 
-                    <el-form-item label="选择题目">
-                        <el-select v-model="quesSelectValue" @change="quesSelectChangeFn" filterable placeholder="请选择">
-                            <el-option v-for="item in quesSelectItems" :key="item.questionId" :label="item.questionText"
-                                :value="item.questionId">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
+                    <el-descriptions title="题目信息" border :column="3">
 
-                    <el-descriptions title="题目信息" border :column="4">
-                        <el-descriptions-item label="题目ID">{{quesInfo.questionId}}</el-descriptions-item>
-                        <el-descriptions-item label="关联考试">{{quesInfo.questionLink}}</el-descriptions-item>
-
-                        <el-descriptions-item label="分值" style='width: 200px;'>{{quesInfo.questionScore}}
+                        <el-descriptions-item label="分值">
+                            <el-input v-model="form.questionScore"></el-input>
                         </el-descriptions-item>
-                        <el-descriptions-item label="题型">{{quesInfo.questionType}}</el-descriptions-item>
+
+                        <el-descriptions-item label="题型">
+                            <el-select value-key="examId" v-model="form.questionType" filterable placeholder="可以为空">
+                                <el-option v-for="item in quesTypeItems" :key="item.value" :label="item.name"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-descriptions-item>
+
+                        <el-descriptions-item label="关联考试">
+                            <el-select value-key="examId" v-model="form.questionLink" filterable placeholder="可以为空">
+                                <el-option v-for="item in selectItems" :key="item.examId" :label="item.examName"
+                                    :value="item.examId">
+                                </el-option>
+                            </el-select>
+                        </el-descriptions-item>
+
                     </el-descriptions>
 
                     <el-descriptions title="选项信息" border :column="3">
                         <el-descriptions-item label="选项1">
-                            {{quesInfo.questionOpinion1}}
+                            <el-input v-model="form.questionOpinion1"></el-input>
                         </el-descriptions-item>
                         <el-descriptions-item label="选项2">
-                            {{quesInfo.questionOpinion2}}
+                            <el-input v-model="form.questionOpinion2"></el-input>
                         </el-descriptions-item>
                         <el-descriptions-item label="选项3">
-                            {{quesInfo.questionOpinion3}}
+                            <el-input v-model="form.questionOpinion3"></el-input>
                         </el-descriptions-item>
                         <el-descriptions-item label="选项4">
-                            {{quesInfo.questionOpinion4}}
+                            <el-input v-model="form.questionOpinion4"></el-input>
                         </el-descriptions-item>
                         <el-descriptions-item label="选项5">
-                            {{quesInfo.questionOpinion5}}
+                            <el-input v-model="form.questionOpinion5"></el-input>
                         </el-descriptions-item>
                         <el-descriptions-item label="     ">
 
                         </el-descriptions-item>
                         <el-descriptions-item label="答案">
-                            <el-tag size="small">{{quesInfo.questionRightChoice}}</el-tag>
+                            <el-input v-model="form.questionRightChoice"></el-input>
                         </el-descriptions-item>
 
                     </el-descriptions>
 
                     <el-descriptions title="题目" border :column="3">
                     </el-descriptions>
-                    
-                    <div v-html="compileMarkDown(quesInfo.questionText)"></div>
-                    
+
+                    <mavon-editor v-model="form.questionText" />
+
                 </el-form>
+
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false;editMode=false">取 消</el-button>
                     <el-button type="primary" @click="save">确 定</el-button>
@@ -145,7 +170,7 @@
         getQuesByIdApi,
         linkQuestionApi,
         removeQuestionApi,
-
+        addQuestionApi,
     } from '@/api/ques.js'
 
     import showdown from "showdown";
@@ -169,7 +194,35 @@
                 quesSelectItems: [],
                 quesSelectValue: '',
                 quesInfo: {},
-
+                quesTypeItems: [{
+                        name: '单选题',
+                        value: '0'
+                    },
+                    {
+                        name: '多选题',
+                        value: '1'
+                    },
+                    {
+                        name: '不定项选择题',
+                        value: '2'
+                    },
+                    {
+                        name: '填空题',
+                        value: '3'
+                    },
+                    {
+                        name: '判断题',
+                        value: '4'
+                    },
+                    {
+                        name: '简答题',
+                        value: '5'
+                    },
+                    {
+                        name: '综合题',
+                        value: '6'
+                    }
+                ],
             }
         },
         created() {
@@ -177,16 +230,15 @@
         },
         methods: {
             load() {
-                listExamApi().then(res => {
+
+                listAllQuesApi().then(res => {
                     var table = res.data.data;
-                    this.selectItems = table;
+                    this.tableData = table;
                 });
             },
             save() {
-                linkQuestionApi({
-                    param1: this.quesSelectValue,
-                    param2: this.selectValue
-                }).then(res => {
+
+                addQuestionApi(this.form).then(res => {
                     if (res.data.code == 200) {
                         //添加成功
                         this.$message({
@@ -195,7 +247,7 @@
                             showClose: true
                         });
                         this.dialogFormVisible = false;
-                        this.selectChangeFn(this.selectValue);
+                        this.load();
                     } else {
                         //添加失败
                         this.$message({
@@ -205,6 +257,7 @@
                         });
                     }
                 });
+
             },
             userAdd() {
                 this.dialogFormVisible = true;
@@ -257,6 +310,7 @@
                 return converter.makeHtml(val);
             },
 
+
         }
     }
 </script>
@@ -268,5 +322,9 @@
 
     .searchInput {
         width: 200px;
+    }
+    
+    .expandTable{
+        margin: 40px;
     }
 </style>
