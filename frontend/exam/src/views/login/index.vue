@@ -25,6 +25,7 @@
 
         </div>
 
+
     </div>
 </template>
 
@@ -71,6 +72,11 @@
                 });
             }
         },
+        mounted() {
+            if (sessionStorage.getItem('authError') == 'true') {
+                this.$message.error('登录失效，请重新登录');
+            }
+        }
 
     }
 </script>
@@ -83,7 +89,7 @@
     .loginBtn {
         color: #fff;
         width: 370px;
-        margin: 0 auto 15px;
+        margin: auto 0;
     }
 
     .login-input {
@@ -166,5 +172,9 @@
         height: 16px;
         width: 16px;
         background-position: -13px 0;
+    }
+
+    .login-button {
+        text-align: center;
     }
 </style>

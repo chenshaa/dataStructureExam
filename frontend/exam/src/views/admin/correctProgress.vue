@@ -31,9 +31,11 @@
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="userId" label="ID" width="200"></el-table-column>
-                <el-table-column prop="userAccount" label="账号" width="160"></el-table-column>
                 <el-table-column prop="userNickname" label="昵称" width="160"></el-table-column>
-                <el-table-column prop="userGroup" label="用户组" width="80"></el-table-column>
+                <el-table-column prop="answerRatio" label="答题比例" width="80"></el-table-column>
+                <el-table-column prop="correctionProgress" label="批改比例" width="80"></el-table-column>
+                <el-table-column prop="fullScore" label="满分" width="80"></el-table-column>
+                <el-table-column prop="score" label="得分" width="80"></el-table-column>
                 <el-table-column label="操作" align="left">
                     <template slot-scope="scope">
 
@@ -86,6 +88,7 @@
     import {
         listStudentInExamApi,
         addPaperApi,
+        correctProgressApi,
     } from '@/api/paper.js'
 
     export default {
@@ -161,8 +164,8 @@
                 console.log(val)
                 this.multipleSelection = val
             },
-            selectChangeFn(selVal) {
-                listStudentInExamApi(selVal).then(res => {
+            selectChangeFn(selVal) { 
+                correctProgressApi(selVal).then(res => {
                     var table = res.data.data;
                     this.tableData = table;
                 });

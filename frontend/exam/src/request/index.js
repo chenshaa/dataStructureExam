@@ -4,8 +4,8 @@ import router from '@/router'
 
 // 创建一个单例（实例）
 const instance = axios.create({
-    //baseURL: "http://localhost:8880",
-    baseURL: "http://exam.zjcs.xyz:80",
+    baseURL: "http://localhost:8880",
+    //baseURL: "http://exam.zjcs.xyz:80",
     timeout: 4000
 })
 
@@ -28,6 +28,7 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(res => {
     if(res.data.code!=200){
         if(res.data.code==401){
+            sessionStorage.setItem("authError", "true");
             router.push("/")
         }
     }

@@ -732,6 +732,8 @@ ERROR_PARAMETER(452,"参数错误"),
 
 #### 2.4.4 getPaper
 
+描述：学生在开始考试后在有需要的情况下再次得到试卷
+
 接口url：/getpaper/{examid}
 
 请求方式：GET
@@ -757,6 +759,8 @@ NO_PERMISSION(401,"无访问权限"),
 ```
 
 #### 2.4.5 updateOne
+
+描述：学生回答一道问题
 
 接口url：/updateone
 
@@ -786,6 +790,8 @@ NO_PERMISSION(401,"无访问权限"),
 
 #### 2.4.6 autoCorrect
 
+描述：由教师或管理员开始自动合分
+
 接口url：/autocorrect/{examid}
 
 请求方式：GET
@@ -796,6 +802,124 @@ NO_PERMISSION(401,"无访问权限"),
 | ------------- | -------- | ------------ |
 | authorization | string   | Bearer token |
 | examid        | string   | 考试id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.7 correctProgress
+
+描述：由管理员或教师查询返回考试情况
+
+接口url：/correctProgress/{examid}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| examid        | string   | 考试id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.8 quesCorrectProgress
+
+描述：由管理员或教师获取单道试题的批改进度
+
+接口url：/quesCorrectProgress/{examId}/{quesid}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| examId        | string   | 考试id       |
+| quesid        | string   | 题目id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.9 getAnswerList
+
+描述：由管理员或教师获得学生对一道问题的全部回答
+
+接口url：/getAnswerList/{examId}/{quesId}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| examId        | string   | 考试id       |
+| quesid        | string   | 题目id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.10 updateScore
+
+
+
+接口url：/updatescore
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明                                 |
+| ------------- | -------- | ------------------------------------ |
+| authorization | string   | Bearer token                         |
+| examId        | string   | 试卷id                               |
+| userId        |          |                                      |
+| quesId        |          | 问题id                               |
+| collectId     |          | 收集id，在此项为空是需要填写上面两项 |
+| newScore      |          | 新成绩                               |
 
 返回数据：
 

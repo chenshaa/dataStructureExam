@@ -24,44 +24,9 @@
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <div class="expandTable">
-                            <el-descriptions title="题目信息" border :column="4">
-                                <el-descriptions-item label="题目ID">{{props.row.questionId}}</el-descriptions-item>
-                                <el-descriptions-item label="关联考试">{{props.row.questionLink}}</el-descriptions-item>
 
-                                <el-descriptions-item label="分值" style='width: 200px;'>{{props.row.questionScore}}
-                                </el-descriptions-item>
-                                <el-descriptions-item label="题型">{{props.row.questionType}}</el-descriptions-item>
-                            </el-descriptions>
+                            <QuesShowBox :quesInfo='props.row'></QuesShowBox>
 
-                            <el-descriptions title="选项信息" border :column="3">
-                                <el-descriptions-item label="选项1">
-                                    {{props.row.questionOpinion1}}
-                                </el-descriptions-item>
-                                <el-descriptions-item label="选项2">
-                                    {{props.row.questionOpinion2}}
-                                </el-descriptions-item>
-                                <el-descriptions-item label="选项3">
-                                    {{props.row.questionOpinion3}}
-                                </el-descriptions-item>
-                                <el-descriptions-item label="选项4">
-                                    {{props.row.questionOpinion4}}
-                                </el-descriptions-item>
-                                <el-descriptions-item label="选项5">
-                                    {{props.row.questionOpinion5}}
-                                </el-descriptions-item>
-                                <el-descriptions-item label="     ">
-
-                                </el-descriptions-item>
-                                <el-descriptions-item label="答案">
-                                    <el-tag size="small">{{props.row.questionRightChoice}}</el-tag>
-                                </el-descriptions-item>
-
-                            </el-descriptions>
-
-                            <el-descriptions title="题目" border :column="3">
-                            </el-descriptions>
-
-                            <div v-html="compileMarkDown(props.row.questionText)"></div>
                         </div>
                     </template>
                 </el-table-column>
@@ -160,6 +125,8 @@
 </template>
 
 <script>
+    import QuesShowBox from '@/components/QuesShowBox.vue'
+
     import {
         listExamApi
     } from '@/api/exam.js'
@@ -311,6 +278,9 @@
             },
 
 
+        },
+        components: {
+            QuesShowBox,
         }
     }
 </script>
@@ -323,8 +293,8 @@
     .searchInput {
         width: 200px;
     }
-    
-    .expandTable{
+
+    .expandTable {
         margin: 40px;
     }
 </style>
