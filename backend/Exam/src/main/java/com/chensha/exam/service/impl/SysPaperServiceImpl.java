@@ -58,7 +58,6 @@ public class SysPaperServiceImpl implements SysPaperService {
     public List<Paper> getPaperListByExamId(String examId){
         LambdaQueryWrapper<Paper> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Paper::getPaperLink,examId);
-        queryWrapper.last("limit 1");
 
         return paperMapper.selectList(queryWrapper);
     }
@@ -79,10 +78,10 @@ public class SysPaperServiceImpl implements SysPaperService {
     }
 
     @Override
-    public String getPaperIdByExamID(String examId) {
+    public String getPaperIdByExamID(String examId,String userId) {
         LambdaQueryWrapper<Paper> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Paper ::getPaperLink,examId);
-        lambdaQueryWrapper.last("limit 1");
+        lambdaQueryWrapper.eq(Paper :: getPaperUser,userId);
         Paper paper = paperMapper.selectOne(lambdaQueryWrapper);
         return paper.getPaperId();
     }

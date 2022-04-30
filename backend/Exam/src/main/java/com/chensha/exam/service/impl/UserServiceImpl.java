@@ -1,6 +1,5 @@
 package com.chensha.exam.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.chensha.exam.dao.pojo.User;
 import com.chensha.exam.service.SysUserService;
@@ -50,10 +49,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result addUser(UserParams userParams) {
-        String token= userParams.getToken();
-        String operatorAccount=JWTUtils.getAccount(token);
-        if (StringUtils.isBlank(token) || StringUtils.isBlank(operatorAccount) || sysUserService.getGroupByAccount(operatorAccount)!=0){
+    public Result addUser(UserParams userParams,String authHeader) {
+
+        if(sysUserService.authTokenAdmin(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
@@ -95,5 +93,14 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUserAccount(JWTUtils.getAccount(token));
         return user;
+    }
+
+    @Override
+    public Result listStu(String authHeader) {
+        if(sysUserService.authTokenAdmin(authHeader)==null){
+            return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
+        }
+
+        return Result.success(sysUserService.listStu());
     }
 }

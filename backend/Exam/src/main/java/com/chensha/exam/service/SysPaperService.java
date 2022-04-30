@@ -16,7 +16,7 @@ public interface SysPaperService {
 
     List<QuestionLiteVo> getQuesLiteVoByExamId(String examId);
 
-    String getPaperIdByExamID(String examId);
+    String getPaperIdByExamID(String examId,String userId);
 
     List<Paper> getPaperListByExamId(String examId);
 }

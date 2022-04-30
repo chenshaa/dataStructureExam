@@ -21,11 +21,6 @@ public class Question {
     private String questionText;
 
     /**
-     * 题目图片，采用base64编码
-     */
-    private String questionPicture;
-
-    /**
      * 题目分值
      */
     private Integer questionScore;

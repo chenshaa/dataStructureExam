@@ -30,5 +30,5 @@ public class QuestionCollect {
     /**
      * 得分
      */
-    private Integer collectScore;
+    private Float collectScore;
 }

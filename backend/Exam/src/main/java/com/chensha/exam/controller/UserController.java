@@ -20,7 +20,12 @@ public class UserController {
     }
 
     @PostMapping("adduser")
-    public Result addUser(@RequestBody UserParams userParams){
-        return userService.addUser(userParams);
+    public Result addUser(@RequestBody UserParams userParams,@RequestHeader("Authorization") String authHeader){
+        return userService.addUser(userParams,authHeader);
+    }
+
+    @GetMapping("/liststu")
+    public Result listStu(@RequestHeader("Authorization")String authHeader) {
+        return userService.listStu(authHeader);
     }
 }

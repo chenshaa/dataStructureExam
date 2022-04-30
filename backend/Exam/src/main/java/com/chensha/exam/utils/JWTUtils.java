@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class JWTUtils {
 
-    private static final String jwtToken = "123456Mszlu!@#$$";
+    private static final String jwtToken = "123456789";
     public static final String AUTH_HEADER_KEY = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
 
@@ -39,6 +39,9 @@ public class JWTUtils {
     public static String getAccount(String token){
         try{
             Map<String, Object> claims=checkToken(token);
+            if (claims == null) {
+                return null;
+            }
             return claims.get("userAccount").toString();
         }catch (Exception e) {
             e.printStackTrace();

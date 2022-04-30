@@ -35,10 +35,10 @@ public class Paper {
     /**
      * 满分
      */
-    private Integer paperScoreFull;
+    private Float paperScoreFull;
 
     /**
      * 得分
      */
-    private Integer paperScoreActual;
+    private Float paperScoreActual;
 }

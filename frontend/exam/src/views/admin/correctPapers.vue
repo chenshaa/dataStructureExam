@@ -22,7 +22,7 @@
                         <el-descriptions title="当前题目" border>
                             <el-descriptions-item label="学生姓名">{{currAnswer.userId}}</el-descriptions-item>
                             <el-descriptions-item label="分数">
-                                <el-input v-model="currAnswer.newScore" placeholder="请输入内容">
+                                <el-input v-model="newScore" placeholder="未评分">
                                     <el-button slot="append" icon="el-icon-caret-top" class='KeyBordShowBtn'>
                                     </el-button>
                                 </el-input>
@@ -30,7 +30,7 @@
                         </el-descriptions>
 
                         <div>
-                            <FloatBox :value="currAnswer.newScore" @keyChange="keyChange" @submit='numSubmit'
+                            <FloatBox :value="newScore" @keyChange="keyChange" @submit='numSubmit'
                                 v-if="showKeybord">
                             </FloatBox>
                         </div>
@@ -158,6 +158,8 @@
                 currAnswer: {},
                 newPage: 0,
                 isImpty: false,
+                newScore:'',
+                
             }
         },
         created() {
@@ -217,13 +219,15 @@
 
             },
             keyChange(val) {
-                this.currAnswer.newScore = val;
+                this.newScore = val;
             },
             numSubmit(val) {
 
             },
             SelectChange(val) {
+                this.newScore=this.currAnswer.score;
                 this.currAnswer = this.answerList[val];
+                this.newScore=this.currAnswer.score;
                 this.newPage = val;
             },
             previousPage() {
@@ -238,7 +242,7 @@
                     'examId': this.examSelectValue,
                     'userId': this.currAnswer.userId,
                     'collectId': this.currAnswer.collectId,
-                    'newScore': this.currAnswer.newScore
+                    'newScore': this.newScore
                 }).then(res => {
                     this.$message({
                         message: '恭喜你，这是一条成功消息',

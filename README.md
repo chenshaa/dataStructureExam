@@ -790,7 +790,7 @@ NO_PERMISSION(401,"无访问权限"),
 
 #### 2.4.6 autoCorrect
 
-描述：由教师或管理员开始自动合分
+描述：由教师或管理员开始自动批改主观题
 
 接口url：/autocorrect/{examid}
 

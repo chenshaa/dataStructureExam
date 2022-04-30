@@ -21,7 +21,8 @@
             <el-input class="searchInput ml-5" placeholder="请输入内容" v-model="input" clearable></el-input>
             <el-button class="ml-5" icon="el-icon-search" circle></el-button>
 
-            <el-button type="primary" @click="userAdd">添加 <i class="el-icon-circle-plus-outline"></i></el-button>
+            <el-button type="primary" @click="autoCorrect">自动批改主观题 <i class="el-icon-s-claim"></i></el-button>
+            <el-button type="primary" @click="setScore">计算得分 <i class="el-icon-s-check"></i></el-button>
             <el-button type="danger" slot="reference">批量移除 <i class="el-icon-remove-outline"></i></el-button>
         </div>
 
@@ -50,26 +51,10 @@
 
         </div>
 
+        <!--自动批改结果-->
         <div>
-            <el-dialog title="添加学生" :visible.sync="dialogFormVisible" width="30%">
-                <el-form label-width="80px" size="small">
-
-                    <el-form-item label="学生">
-
-                        <el-select value-key="userId" v-model="stuSelectValue"  filterable
-                            placeholder="请选择">
-                            <el-option v-for="item in stuSelectItems" :key="item.userId" :label="item.userNickname"
-                                :value="item.userId">
-                            </el-option>
-                        </el-select>
-
-                    </el-form-item>
-
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="save">确 定</el-button>
-                </div>
+            <el-dialog title="自动批改" :visible.sync="dialogFormVisible" width="30%">
+                
             </el-dialog>
         </div>
     </div>
@@ -98,25 +83,8 @@
                 tableData: [],
                 dialogFormVisible: false,
                 multipleSelection: [],
-                form: {
-                    userGroup: '2'
-                },
-                roles: [{
-                    value: '2',
-                    label: '学生'
-                }, {
-                    value: '1',
-                    label: '教师',
-                    disabled: true
-                }, {
-                    value: '0',
-                    label: '管理员',
-                    disabled: true
-                }],
                 selectItems: [],
                 selectValue: '',
-                stuSelectItems: [],
-                stuSelectValue: '',
             }
         },
         created() {
@@ -129,37 +97,6 @@
                     this.selectItems = table;
                 });
             },
-            save() {
-                addPaperApi({
-                    paperUser:this.stuSelectValue,
-                    paperLink:this.selectValue
-                }).then(res => {
-                    if (res.data.code == 200) {
-                        //添加成功
-                        this.$message({
-                            message: '添加成功',
-                            type: 'success',
-                            showClose: true
-                        });
-                        this.dialogFormVisible=false;
-                        this.selectChangeFn(this.selectValue);
-                    } else {
-                        //添加失败
-                        this.$message({
-                            message: '添加失败：' + res.data.msg + '  code' + res.data.code,
-                            type: 'error',
-                            showClose: true
-                        });
-                    }
-                });
-            },
-            userAdd() {
-                this.dialogFormVisible = true;
-                listStudentApi().then(res => {
-                    this.stuSelectItems = res.data.data.data;
-                    console.log(res.data.data);
-                });
-            },
             handleSelectionChange(val) {
                 console.log(val)
                 this.multipleSelection = val
@@ -170,6 +107,12 @@
                     this.tableData = table;
                 });
             },
+            autoCorrect(){
+                
+            },
+            setScore(){
+                
+            }
 
         }
     }

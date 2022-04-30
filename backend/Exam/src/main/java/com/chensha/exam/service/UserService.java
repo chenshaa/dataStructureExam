@@ -8,7 +8,9 @@ import com.chensha.exam.vo.params.UserParams;
 public interface UserService {
     Result login(LoginParams loginParams);
 
-    Result addUser(UserParams userParams);
+    Result addUser(UserParams userParams,String authHeader);
 
     User checkToken(String token);
+
+    Result listStu(String authHeader);
 }

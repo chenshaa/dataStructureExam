@@ -15,11 +15,6 @@ public class QuestionVo {
     private String questionText;
 
     /**
-     * 题目图片，采用base64编码
-     */
-    private String questionPicture;
-
-    /**
      * 题目分值
      */
     private Integer questionScore;
@@ -51,5 +46,6 @@ public class QuestionVo {
      * 选择类为选项编号，用-连接；填空，简答选择第一个选项。内容未null表示无法自动判断。
      */
     private String questionRightChoice;
+
 
 }

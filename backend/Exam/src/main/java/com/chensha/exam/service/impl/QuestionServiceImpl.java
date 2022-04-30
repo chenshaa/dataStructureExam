@@ -10,6 +10,7 @@ import com.chensha.exam.vo.ErrorCode;
 import com.chensha.exam.vo.QuestionVo;
 import com.chensha.exam.vo.Result;
 import com.chensha.exam.vo.params.QuestionParams;
+import com.chensha.exam.vo.params.Uni2Params;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionMapper questionMapper;
 
     @Override
-    public Result listQues(String authHeader) {
+    public Result listAllQues(String authHeader) {
         if(sysUserService.authTokenAdmin(authHeader)==null){
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
@@ -94,5 +95,71 @@ public class QuestionServiceImpl implements QuestionService {
         queryWrapper.last("limit 1");
 
         return (questionMapper.selectOne(queryWrapper).getQuestionType());
+    }
+
+    @Override
+    public Result listQues(String examid, String authHeader) {
+        if(sysUserService.authTokenAdmin(authHeader)==null){
+            return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
+        }
+
+        LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Question ::getQuestionLink,examid);
+        List<Question> quesList = questionMapper.selectList(queryWrapper);
+        return Result.success(copyList(quesList));
+    }
+
+    @Override
+    public Result getQuesById(String quesid, String authHeader) {
+        LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Question::getQuestionId,quesid);
+
+        return Result.success(questionMapper.selectOne(queryWrapper));
+    }
+
+    @Override
+    public Result linkQues(String authHeader, Uni2Params questionParams) {
+        //params判空--todo
+
+        Question question = new Question();
+        question.setQuestionId(questionParams.getParam1());
+        question.setQuestionLink(questionParams.getParam2());
+        questionMapper.updateById(question);
+        return Result.success("成功");
+    }
+
+    @Override
+    public Result removeQues(String authHeader, Uni2Params questionParams) {
+        // 校验--todo
+
+        Question question = new Question();
+        question.setQuestionId(questionParams.getParam1());
+        question.setQuestionLink("");
+        questionMapper.updateById(question);
+
+        return Result.success("成功");
+    }
+
+    @Override
+    public Integer countQues(String examid) {
+        LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Question ::getQuestionLink,examid);
+        List<Question> quesList = questionMapper.selectList(queryWrapper);
+
+        return quesList.size();
+    }
+
+    @Override
+    public Float getFullScore(String examid) {
+        LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Question ::getQuestionLink,examid);
+        List<Question> quesList = questionMapper.selectList(queryWrapper);
+
+        Float count = Float.valueOf(0);
+        for (Question question : quesList) {
+            count += question.getQuestionScore();
+        }
+
+        return count;
     }
 }
