@@ -15,17 +15,17 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("login")
-    public Result login(@RequestBody LoginParams loginParams){
+    public Result login(@RequestBody LoginParams loginParams) {
         return userService.login(loginParams);
     }
 
     @PostMapping("adduser")
-    public Result addUser(@RequestBody UserParams userParams,@RequestHeader("Authorization") String authHeader){
-        return userService.addUser(userParams,authHeader);
+    public Result addUser(@RequestBody UserParams userParams, @RequestHeader("Authorization") String authHeader) {
+        return userService.addUser(userParams, authHeader);
     }
 
     @GetMapping("/liststu")
-    public Result listStu(@RequestHeader("Authorization")String authHeader) {
+    public Result listStu(@RequestHeader("Authorization") String authHeader) {
         return userService.listStu(authHeader);
     }
 }

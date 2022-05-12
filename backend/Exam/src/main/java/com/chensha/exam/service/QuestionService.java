@@ -2,7 +2,7 @@ package com.chensha.exam.service;
 
 import com.chensha.exam.vo.Result;
 import com.chensha.exam.vo.params.QuestionParams;
-import com.chensha.exam.vo.params.Uni2Params;
+import com.chensha.exam.vo.params.LinkQuesParams;
 
 public interface QuestionService {
     Result listAllQues(String authHeader);
@@ -15,9 +15,9 @@ public interface QuestionService {
 
     Result getQuesById(String quesid, String authHeader);
 
-    Result linkQues(String authHeader, Uni2Params questionParams);
+    Result linkQues(String authHeader, LinkQuesParams questionParams);
 
-    Result removeQues(String authHeader, Uni2Params questionParams);
+    Result disLinkQues(String authHeader, LinkQuesParams questionParams);
 
     Integer countQues(String examid);
 

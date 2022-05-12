@@ -227,15 +227,13 @@ NO_PERMISSION(401,"无访问权限"),
 
 2.1.3 listStu
 
-### 2.2 Exam
+### 2.2 Exam ok
 
 接口url：/exam
 
 #### 2.2.1 listExam
 
 描述：由管理员或者教师列出所有考试
-
-todo：根据Group鉴权
 
 接口url：/listexam
 
@@ -499,7 +497,39 @@ NO_PERMISSION(401,"无访问权限"),
 返回数据：
 
 ~~~json
-
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": [
+    {
+      "questionId": "1498669271165472769",
+      "questionText": "测试多选题",
+      "questionScore": 3,
+      "questionType": 1,
+      "questionLink": "1498231424549679105",
+      "questionOpinion1": "选项1",
+      "questionOpinion2": "选项2",
+      "questionOpinion3": "选项3",
+      "questionOpinion4": "选项4",
+      "questionOpinion5": null,
+      "questionRightChoice": "1-4"
+    },
+    {
+      "questionId": "1498920332810166274",
+      "questionText": "编写程序",
+      "questionScore": 3,
+      "questionType": 6,
+      "questionLink": "1498231424549679105",
+      "questionOpinion1": null,
+      "questionOpinion2": null,
+      "questionOpinion3": null,
+      "questionOpinion4": null,
+      "questionOpinion5": null,
+      "questionRightChoice": "wawawawa"
+    }
+  ]
+}
 ~~~
 
 失败返回数据：
@@ -507,6 +537,8 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
 ```
 
 #### 2.3.3 addQuestion
@@ -551,7 +583,6 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 ERROR_PARAMETER(452,"参数错误"),
 //有必填项未填写
-
 ```
 
 #### 2.3.4 GetQuestionById
@@ -572,13 +603,35 @@ ERROR_PARAMETER(452,"参数错误"),
 返回数据：
 
 ~~~json
-
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "questionId": "1498669271165472769",
+    "questionText": "多选测试题",
+    "questionScore": 3,
+    "questionType": 1,
+    "questionLink": "1498231424549679105",
+    "questionOpinion1": "选项1",
+    "questionOpinion2": "选项2",
+    "questionOpinion3": "选项3",
+    "questionOpinion4": "选项4",
+    "questionOpinion5": null,
+    "questionRightChoice": "1-4",
+    "questionCreateTime": 1646145572828,
+    "questionUpdateTime": 1646145572828
+  }
+}
 ~~~
 
 失败返回数据：
 
 ```java
-
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
 ```
 
 #### 2.3.5 linkQues
@@ -600,16 +653,22 @@ ERROR_PARAMETER(452,"参数错误"),
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
 ~~~
 
 失败返回数据：
 
 ```java
-
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
 ```
-
-
 
 #### 2.3.6 disLinkQues
 
@@ -629,13 +688,21 @@ ERROR_PARAMETER(452,"参数错误"),
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
 ~~~
 
 失败返回数据：
 
 ```java
-
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//有必填项未填写
 ```
 
 
@@ -746,10 +813,12 @@ NO_PERMISSION(401,"无访问权限"),
 
 ```java
 NO_PERMISSION(401,"无访问权限"),
-//未提交token/token无效/token权限不足
+//未提交token/token无效/用户不存在
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数/试卷不存在/考试不存在
+ERROR_EXAM(403,"考试已结束/未开始"),
+//未到开始时间/已过结束时间
 ```
-
-
 
 #### 2.4.3 addPaper
 
@@ -805,14 +874,48 @@ ERROR_PARAMETER(452,"参数错误"),
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": [
+        {
+            "questionId": "1469581767806226434",
+            "questionText": "测试测试测试选A",
+            "questionPicture": null,
+            "questionScore": 3,
+            "questionType": 0,
+            "questionOpinion1": "选项1",
+            "questionOpinion2": "选项2",
+            "questionOpinion3": "选项3",
+            "questionOpinion4": "选项4",
+            "questionOpinion5": null
+        },
+        {
+            "questionId": "1469592620932681729",
+            "questionText": "多选测试测试测试选AD",
+            "questionPicture": null,
+            "questionScore": 3,
+            "questionType": 1,
+            "questionOpinion1": "选项1",
+            "questionOpinion2": "选项2",
+            "questionOpinion3": "选项3",
+            "questionOpinion4": "选项4",
+            "questionOpinion5": null
+        }
+    ]
+}
 ~~~
 
 失败返回数据：
 
 ```java
 NO_PERMISSION(401,"无访问权限"),
-//未提交token/token无效/token权限不足
+//未提交token/token无效/用户不存在
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数/试卷不存在/考试不存在
+ERROR_EXAM(403,"考试已结束/未开始"),
+//未到开始时间/已过结束时间
 ```
 
 #### 2.4.5 updateOne
@@ -835,14 +938,23 @@ NO_PERMISSION(401,"无访问权限"),
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
 ~~~
 
 失败返回数据：
 
 ```java
 NO_PERMISSION(401,"无访问权限"),
-//未提交token/token无效/token权限不足
+//未提交token/token无效
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数/试卷不存在/考试不存在
+ERROR_EXAM(403,"考试已结束/未开始"),
+//未到开始时间/已过结束时间
 ```
 
 #### 2.4.6 autoCorrect
@@ -863,7 +975,12 @@ NO_PERMISSION(401,"无访问权限"),
 返回数据：
 
 ~~~json
-
+{
+    "success": true,
+    "code": 200,
+    "msg": "success",
+    "data": "成功"
+}
 ~~~
 
 失败返回数据：
@@ -871,6 +988,8 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数
 ```
 
 #### 2.4.7 correctProgress
@@ -891,7 +1010,37 @@ NO_PERMISSION(401,"无访问权限"),
 返回数据：
 
 ~~~json
-
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": [
+    {
+      "userId": "1506195996330897409",
+      "userNickname": "学生8",
+      "answerRatio": 1,
+      "fullScore": 6,
+      "score": 2,
+      "correctionProgress": 1
+    },
+    {
+      "userId": "1506196011300368386",
+      "userNickname": "学生9",
+      "answerRatio": 1,
+      "fullScore": 6,
+      "score": 3,
+      "correctionProgress": 1
+    },
+    {
+      "userId": "1506196034566172673",
+      "userNickname": "学生10",
+      "answerRatio": 1,
+      "fullScore": 6,
+      "score": 0,
+      "correctionProgress": 1
+    }
+  ]
+}
 ~~~
 
 失败返回数据：
@@ -899,11 +1048,13 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数
 ```
 
 #### 2.4.8 quesCorrectProgress
 
-描述：由管理员或教师获取单道试题的批改进度
+描述：由管理员或教师获取某一条道试题的批改进度（百分比，以小数表示）
 
 接口url：/quesCorrectProgress/{examId}/{quesid}
 
@@ -920,7 +1071,12 @@ NO_PERMISSION(401,"无访问权限"),
 返回数据：
 
 ~~~json
-
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": 1
+}
 ~~~
 
 失败返回数据：
@@ -928,11 +1084,13 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数
 ```
 
 #### 2.4.9 getAnswerList
 
-描述：由管理员或教师获得学生对一道问题的全部回答
+描述：由管理员或教师获得全部学生对一道问题的回答
 
 接口url：/getAnswerList/{examId}/{quesId}
 
@@ -949,7 +1107,34 @@ NO_PERMISSION(401,"无访问权限"),
 返回数据：
 
 ~~~json
-
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": [
+    {
+      "userId": "1498198204508635138",
+      "answerSituation": "2",
+      "collectId": "1501747800241381378",
+      "answer": "1-4",
+      "score": "3.0"
+    },
+    {
+      "userId": "1498198135105486849",
+      "answerSituation": "2",
+      "collectId": "1501752442224431106",
+      "answer": "1-4",
+      "score": "3.0"
+    },
+    {
+      "userId": "1498222132115304449",
+      "answerSituation": "2",
+      "collectId": "1508087073578594305",
+      "answer": "",
+      "score": "0.0"
+    }
+  ]
+}
 ~~~
 
 失败返回数据：
@@ -957,11 +1142,13 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数
 ```
 
 #### 2.4.10 updateScore
 
-描述：
+描述：由管理员或教师为一条回答设置得分
 
 接口url：/updatescore
 
@@ -969,19 +1156,24 @@ NO_PERMISSION(401,"无访问权限"),
 
 请求参数：
 
-| 参数名称      | 参数类型 | 说明                                 |
-| ------------- | -------- | ------------------------------------ |
-| authorization | string   | Bearer token                         |
-| examId        | string   | 试卷id                               |
-| userId        |          |                                      |
-| quesId        |          | 问题id                               |
-| collectId     |          | 收集id，在此项为空是需要填写上面两项 |
-| newScore      |          | 新成绩                               |
+| 参数名称      | 参数类型 | 说明                                       |
+| ------------- | -------- | ------------------------------------------ |
+| authorization | string   | Bearer token                               |
+| examId        | string   | 试卷id                                     |
+| userId        | string   | 用户id                                     |
+| quesId        | string   | 问题id                                     |
+| collectId     | string   | 收集id，在此项为空时需要填写userId和quesId |
+| newScore      | string   | 新成绩                                     |
 
 返回数据：
 
 ~~~json
-
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": 1
+}
 ~~~
 
 失败返回数据：
@@ -989,11 +1181,13 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数
 ```
 
 #### 2.4.11 calculateScore
 
-描述：
+描述：由管理员或教师发起，为一场考试自动计算成绩单
 
 接口url：/calculateScore/{examid}
 
@@ -1009,7 +1203,12 @@ NO_PERMISSION(401,"无访问权限"),
 返回数据：
 
 ~~~json
-
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": 1
+}
 ~~~
 
 失败返回数据：
@@ -1017,5 +1216,55 @@ NO_PERMISSION(401,"无访问权限"),
 ```java
 NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数
+```
+
+#### 2.4.12 listStudents
+
+描述：
+
+接口url：/liststu/{examid}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| examId        | string   | 试卷id       |
+
+返回数据：
+
+~~~json
+{
+  "success": true,
+  "code": 200,
+  "msg": "success",
+  "data": [
+    {
+      "userId": "1506196011300368386",
+      "userAccount": "stu9",
+      "userNickname": "学生9",
+      "userGroup": 2
+    },
+    {
+      "userId": "1506196034566172673",
+      "userAccount": "stu10",
+      "userNickname": "学生10",
+      "userGroup": 2
+    }
+  ]
+}
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+ERROR_PARAMETER(452,"参数错误"),
+//未提交足够的参数
 ```
 

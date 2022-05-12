@@ -11,7 +11,6 @@ import com.chensha.exam.service.SysPaperService;
 import com.chensha.exam.vo.ExamVo;
 import com.chensha.exam.vo.QuestionLiteVo;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,16 +18,19 @@ import java.util.List;
 
 @Service
 public class SysPaperServiceImpl implements SysPaperService {
-    @Autowired
-    public ExamMapper examMapper;
-    @Autowired
-    public PaperMapper paperMapper;
-    @Autowired
-    public QuestionMapper questionMapper;
+    public final ExamMapper examMapper;
+    public final PaperMapper paperMapper;
+    public final QuestionMapper questionMapper;
 
-    public ExamVo getExamVoById(String id){
+    public SysPaperServiceImpl(ExamMapper examMapper, PaperMapper paperMapper, QuestionMapper questionMapper) {
+        this.examMapper = examMapper;
+        this.paperMapper = paperMapper;
+        this.questionMapper = questionMapper;
+    }
+
+    public ExamVo getExamVoById(String id) {
         LambdaQueryWrapper<Exam> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Exam::getExamId,id);
+        queryWrapper.eq(Exam::getExamId, id);
         queryWrapper.last("limit 1");
         Exam exam = examMapper.selectOne(queryWrapper);
 
@@ -38,34 +40,33 @@ public class SysPaperServiceImpl implements SysPaperService {
         return examVo;
     }
 
-    public Exam getExamById(String id){
+    public Exam getExamById(String id) {
         LambdaQueryWrapper<Exam> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Exam::getExamId,id);
+        queryWrapper.eq(Exam::getExamId, id);
         queryWrapper.last("limit 1");
 
         return examMapper.selectOne(queryWrapper);
     }
 
-    public Paper getPaperByExamId(String examId, String userId){
+    public Paper getPaperByExamId(String examId, String userId) {
         LambdaQueryWrapper<Paper> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Paper::getPaperLink,examId);
-        queryWrapper.eq(Paper ::getPaperUser,userId);
+        queryWrapper.eq(Paper::getPaperLink, examId);
+        queryWrapper.eq(Paper::getPaperUser, userId);
         queryWrapper.last("limit 1");
 
         return paperMapper.selectOne(queryWrapper);
     }
 
-    public List<Paper> getPaperListByExamId(String examId){
+    public List<Paper> getPaperListByExamId(String examId) {
         LambdaQueryWrapper<Paper> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Paper::getPaperLink,examId);
+        queryWrapper.eq(Paper::getPaperLink, examId);
 
         return paperMapper.selectList(queryWrapper);
     }
 
-
-    public List<QuestionLiteVo> getQuesLiteVoByExamId(String examId){
+    public List<QuestionLiteVo> getQuesLiteVoByExamId(String examId) {
         LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Question ::getQuestionLink,examId);
+        queryWrapper.eq(Question::getQuestionLink, examId);
         List<Question> questionList = questionMapper.selectList(queryWrapper);
 
         List<QuestionLiteVo> questionLiteVos = new ArrayList<>();
@@ -78,10 +79,10 @@ public class SysPaperServiceImpl implements SysPaperService {
     }
 
     @Override
-    public String getPaperIdByExamID(String examId,String userId) {
+    public String getPaperIdByExamID(String examId, String userId) {
         LambdaQueryWrapper<Paper> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Paper ::getPaperLink,examId);
-        lambdaQueryWrapper.eq(Paper :: getPaperUser,userId);
+        lambdaQueryWrapper.eq(Paper::getPaperLink, examId);
+        lambdaQueryWrapper.eq(Paper::getPaperUser, userId);
         Paper paper = paperMapper.selectOne(lambdaQueryWrapper);
         return paper.getPaperId();
     }

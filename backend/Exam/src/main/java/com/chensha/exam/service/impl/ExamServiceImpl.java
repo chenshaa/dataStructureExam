@@ -11,7 +11,6 @@ import com.chensha.exam.vo.ExamVo;
 import com.chensha.exam.vo.Result;
 import com.chensha.exam.vo.params.ExamParams;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,14 +19,23 @@ import java.util.List;
 @Service
 public class ExamServiceImpl implements ExamService {
 
-    @Autowired
-    private SysUserService sysUserService;
-    @Autowired
-    private ExamMapper examMapper;
+    private final SysUserService sysUserService;
+    private final ExamMapper examMapper;
 
+    public ExamServiceImpl(SysUserService sysUserService, ExamMapper examMapper) {
+        this.sysUserService = sysUserService;
+        this.examMapper = examMapper;
+    }
+
+    /**
+     * 由管理员或者教师列出所有考试
+     *
+     * @param authHeader token认证头
+     * @return List<ExamVo> 全部考试列表
+     */
     @Override
     public Result listExam(String authHeader) {
-        if(sysUserService.authTokenAdmin(authHeader)==null){
+        if (sysUserService.authHeader4Admin(authHeader) == null) {
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
@@ -36,18 +44,25 @@ public class ExamServiceImpl implements ExamService {
         return Result.success(copyList(examList));
     }
 
+    /**
+     * 由管理员或者教师增加一场考试
+     *
+     * @param authHeader token认证头
+     * @param examParams 考试详情params
+     * @return 成功
+     */
     @Override
     public Result addExam(String authHeader, ExamParams examParams) {
-        if(sysUserService.authTokenAdmin(authHeader)==null){
+        if (sysUserService.authHeader4Admin(authHeader) == null) {
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
-        if(examParams == null || StringUtils.isBlank(examParams.getExamName()) || StringUtils.isBlank(examParams.getExamDescription())){
-            return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
+        if (examParams == null || StringUtils.isBlank(examParams.getExamName()) || StringUtils.isBlank(examParams.getExamDescription())) {
+            return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(), ErrorCode.ERROR_PARAMETER.getMsg());
         }
 
-        if(getExamByName(examParams.getExamName()) != null ){
-            return Result.fail(ErrorCode.OBJECT_EXISTS.getCode(),ErrorCode.OBJECT_EXISTS.getMsg());
+        if (getExamByName(examParams.getExamName()) != null) {
+            return Result.fail(ErrorCode.OBJECT_EXISTS.getCode(), ErrorCode.OBJECT_EXISTS.getMsg());
         }
 
         Exam exam = new Exam();
@@ -58,22 +73,30 @@ public class ExamServiceImpl implements ExamService {
         return Result.success("成功");
     }
 
+    /**
+     * 由管理员或者教师结束一场考试
+     *
+     * @param examId     考试id
+     * @param timestamp  结束时间戳，留空则为现在
+     * @param authHeader token认证头
+     * @return 成功
+     */
     @Override
     public Result setExamEnd(String examId, Long timestamp, String authHeader) {
-        if(sysUserService.authTokenAdmin(authHeader)==null){
+        if (sysUserService.authHeader4Admin(authHeader) == null) {
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
-        if(StringUtils.isBlank(examId)){
-            return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
+        if (StringUtils.isBlank(examId)) {
+            return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(), ErrorCode.ERROR_PARAMETER.getMsg());
         }
 
         Exam exam = getExamById(examId);
-        if(exam == null ){
-            return Result.fail(ErrorCode.OBJECT_MISSED.getCode(),ErrorCode.OBJECT_MISSED.getMsg());
+        if (exam == null) {
+            return Result.fail(ErrorCode.OBJECT_MISSED.getCode(), ErrorCode.OBJECT_MISSED.getMsg());
         }
         Long time = timestamp;
-        if(timestamp == null){
+        if (timestamp == null) {
             time = System.currentTimeMillis();
         }
 
@@ -82,22 +105,30 @@ public class ExamServiceImpl implements ExamService {
         return Result.success("成功");
     }
 
+    /**
+     * 由管理员或者教师开始一场考试
+     *
+     * @param examId     考试id
+     * @param timestamp  开始时间戳，留空则为现在
+     * @param authHeader token认证头
+     * @return 成功
+     */
     @Override
     public Result setExamStart(String examId, Long timestamp, String authHeader) {
-        if(sysUserService.authTokenAdmin(authHeader)==null){
+        if (sysUserService.authHeader4Admin(authHeader) == null) {
             return Result.fail(ErrorCode.NO_PERMISSION.getCode(), ErrorCode.NO_PERMISSION.getMsg());
         }
 
-        if(StringUtils.isBlank(examId)){
-            return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(),ErrorCode.ERROR_PARAMETER.getMsg());
+        if (StringUtils.isBlank(examId)) {
+            return Result.fail(ErrorCode.ERROR_PARAMETER.getCode(), ErrorCode.ERROR_PARAMETER.getMsg());
         }
 
         Exam exam = getExamById(examId);
-        if(exam == null ){
-            return Result.fail(ErrorCode.OBJECT_MISSED.getCode(),ErrorCode.OBJECT_MISSED.getMsg());
+        if (exam == null) {
+            return Result.fail(ErrorCode.OBJECT_MISSED.getCode(), ErrorCode.OBJECT_MISSED.getMsg());
         }
         Long time = timestamp;
-        if(timestamp == null){
+        if (timestamp == null) {
             time = System.currentTimeMillis();
         }
 
@@ -106,7 +137,7 @@ public class ExamServiceImpl implements ExamService {
         return Result.success("成功");
     }
 
-    public List<ExamVo> copyList(List<Exam> examList){
+    public List<ExamVo> copyList(List<Exam> examList) {
         List<ExamVo> examVoList = new ArrayList<>();
         for (Exam exam : examList) {
             ExamVo examVo = new ExamVo();
@@ -116,17 +147,17 @@ public class ExamServiceImpl implements ExamService {
         return examVoList;
     }
 
-    public Exam getExamByName(String name){
+    public Exam getExamByName(String name) {
         LambdaQueryWrapper<Exam> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Exam::getExamName,name);
+        queryWrapper.eq(Exam::getExamName, name);
         queryWrapper.last("limit 1");
 
         return (examMapper.selectOne(queryWrapper));
     }
 
-    public Exam getExamById(String examId){
+    public Exam getExamById(String examId) {
         LambdaQueryWrapper<Exam> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Exam::getExamId,examId);
+        queryWrapper.eq(Exam::getExamId, examId);
         queryWrapper.last("limit 1");
 
         return (examMapper.selectOne(queryWrapper));

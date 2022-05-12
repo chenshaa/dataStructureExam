@@ -13,9 +13,9 @@ public interface SysUserService {
 
     void save(User user);
 
-    int getGroupByAccount(String account);
+    Integer getGroupByAccount(String account);
 
-    String authTokenAdmin(String authHeader);
+    String authHeader4Admin(String authHeader);
 
     String getIdByAccount(String account);
 

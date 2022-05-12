@@ -7,7 +7,6 @@ import com.chensha.exam.utils.JWTUtils;
 import com.chensha.exam.vo.ErrorCode;
 import com.chensha.exam.vo.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,8 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class LoginInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public LoginInterceptor(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
