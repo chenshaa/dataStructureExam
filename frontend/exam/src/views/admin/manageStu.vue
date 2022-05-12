@@ -2,7 +2,7 @@
     <div class="manageStu">
 
         <div style="margin: 10px 0">
-            <el-input class="searchInput ml-5" placeholder="请输入内容" v-model="input" clearable></el-input>
+            <el-input class="searchInput ml-5" placeholder="请输入内容" v-model="searchInput" clearable></el-input>
             <el-button class="ml-5" icon="el-icon-search" circle></el-button>
 
             <el-button type="primary" @click="userAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
@@ -16,12 +16,21 @@
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="userId" label="ID" width="200"></el-table-column>
                 <el-table-column prop="userAccount" label="账号" width="160"></el-table-column>
-                <el-table-column prop="userNickname" label="昵称" width="160"></el-table-column>
-                <el-table-column prop="userGroup" label="用户组" width="80"></el-table-column>
+                <el-table-column prop="userNickname" label="昵称"></el-table-column>
+
+                <el-table-column prop="userGroup" label="用户组" width="80">
+                    <template slot-scope="scope">
+                        <el-tag :type="scope.row.userGroup === '学生' ? 'primary' : 'success'" disable-transitions>
+                            {{scope.row.userGroup}}
+                        </el-tag>
+                    </template>
+                </el-table-column>
+
                 <el-table-column label="操作" align="left">
                     <template slot-scope="scope">
                         <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i>
                         </el-button>
+
                         <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='我再想想'
                             icon="el-icon-info" icon-color="red" title="您确定删除吗？" @confirm="del(scope.row.id)">
                             <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i>
@@ -29,32 +38,34 @@
                         </el-popconfirm>
                     </template>
                 </el-table-column>
+
             </el-table>
 
         </div>
 
+        <!--添加用户dialog-->
         <div>
-            <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%">
+            <el-dialog title="用户信息" :visible.sync="userInfoFormVisible" width="30%">
                 <el-form label-width="80px" size="small">
 
                     <el-form-item label="姓名">
-                        <el-input v-model="form.userNickname" autocomplete="off"></el-input>
+                        <el-input v-model="addUserForm.userNickname" autocomplete="off"></el-input>
                     </el-form-item>
 
                     <el-form-item label="账号">
-                        <el-input v-model="form.account" autocomplete="off"></el-input>
+                        <el-input v-model="addUserForm.account" autocomplete="off"></el-input>
                     </el-form-item>
 
                     <el-form-item label="密码">
-                        <el-input v-model="form.password" autocomplete="off" show-password></el-input>
+                        <el-input v-model="addUserForm.password" autocomplete="off" show-password></el-input>
                     </el-form-item>
 
                     <el-form-item label="确认密码">
-                        <el-input v-model="form.password2" autocomplete="off" show-password></el-input>
+                        <el-input v-model="addUserForm.password2" autocomplete="off" show-password></el-input>
                     </el-form-item>
 
                     <el-form-item label="角色">
-                        <el-select v-model="form.userGroup" placeholder="请选择角色" style="width: 100%">
+                        <el-select v-model="addUserForm.userGroup" placeholder="请选择角色" style="width: 100%">
                             <el-option v-for="item in roles" :key="item.value" :label="item.label" :value="item.value"
                                 :disabled="item.disabled">
                             </el-option>
@@ -63,11 +74,41 @@
 
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="save">确 定</el-button>
+                    <el-button @click="userInfoFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="addUser">确 定</el-button>
                 </div>
             </el-dialog>
         </div>
+
+        <!--编辑用户dialog-->
+        <div>
+            <el-dialog title="编辑用户信息" :visible.sync="userInfoEditFormVisible" width="30%">
+                <el-form label-width="80px" size="small">
+
+                    <el-form-item label="姓名">
+                        <el-input v-model="editUserForm.userNickname" autocomplete="off"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="账号">
+                        <el-input v-model="editUserForm.account" autocomplete="off"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="密码">
+                        <el-input v-model="editUserForm.password" autocomplete="off" show-password></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="确认密码">
+                        <el-input v-model="editUserForm.password2" autocomplete="off" show-password></el-input>
+                    </el-form-item>
+
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="userInfoEditFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="editUser">确 定</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
     </div>
 </template>
 
@@ -80,11 +121,15 @@
     export default {
         data() {
             return {
-                input: '',
+                searchInput: '',
                 tableData: [],
-                dialogFormVisible: false,
+                userInfoFormVisible: false,
+                userInfoEditFormVisible: false,
                 multipleSelection: [],
-                form: {
+                addUserForm: {
+                    userGroup: '2'
+                },
+                editUserForm: {
                     userGroup: '2'
                 },
                 roles: [{
@@ -109,15 +154,17 @@
                 listStudentApi().then(res => {
                     var table = res.data.data.data;
                     for (var j = 0; j < table.length; j++) {
-                        if (table[j].userGroup == 2) {
-                            table[j].userGroup = "学生";
+                        for (var i = 0; i < 3; i++) {
+                            if (this.roles[i].value == table[j].userGroup) {
+                                table[j].userGroup = this.roles[i].label;
+                            }
                         }
                     }
                     this.tableData = table;
                 });
             },
-            save() {
-                adduserApi(this.form).then(res => {
+            addUser() {
+                adduserApi(this.addUserForm).then(res => {
                     if (res.data.code == 200) {
                         //添加成功
                         this.$message({
@@ -136,11 +183,18 @@
                 });
             },
             userAdd() {
-                this.dialogFormVisible = true;
+                this.userInfoFormVisible = true;
             },
             handleSelectionChange(val) {
                 console.log(val)
                 this.multipleSelection = val
+            },
+            handleEdit(val) {
+                this.userInfoEditFormVisible = true;
+            },
+            editUser() {
+                this.$message('todo:用户信息编辑');
+                this.userInfoEditFormVisible = false;
             }
 
         }

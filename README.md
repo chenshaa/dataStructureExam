@@ -509,7 +509,7 @@ NO_PERMISSION(401,"无访问权限"),
 //未提交token/token无效/token权限不足
 ```
 
-#### 2.2.2 addQuestion
+#### 2.3.3 addQuestion
 
 描述：由管理员或教师添加一道题目
 
@@ -554,7 +554,7 @@ ERROR_PARAMETER(452,"参数错误"),
 
 ```
 
-#### 2.3.2 GetQuestionById
+#### 2.3.4 GetQuestionById
 
 描述：根据题目ID得到题目
 
@@ -581,7 +581,64 @@ ERROR_PARAMETER(452,"参数错误"),
 
 ```
 
-#### 
+#### 2.3.5 linkQues
+
+描述：将试题关联至一张试卷（添加）
+
+接口url：/disLinkQues
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称      | 参数类型 | 必填 | 说明               |
+| ------------- | -------- | ---- | ------------------ |
+| authorization | string   | √    | Bearer token       |
+| questionId    | string   | √    | 题目id             |
+| questionLink  | string   | √    | 关联(添加)到的试卷 |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+
+```
+
+
+
+#### 2.3.6 disLinkQues
+
+描述：将试题从关联的试卷中移除（将关联置空）
+
+接口url：/disLinkQues
+
+请求方式：POST
+
+请求参数：
+
+| 参数名称      | 参数类型 | 必填 | 说明         |
+| ------------- | -------- | ---- | ------------ |
+| authorization | string   | √    | Bearer token |
+| questionId    | string   | √    | 题目id       |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+
+```
+
+
 
 ### 2.4 Paper
 
@@ -904,7 +961,7 @@ NO_PERMISSION(401,"无访问权限"),
 
 #### 2.4.10 updateScore
 
-
+描述：
 
 接口url：/updatescore
 
@@ -920,6 +977,34 @@ NO_PERMISSION(401,"无访问权限"),
 | quesId        |          | 问题id                               |
 | collectId     |          | 收集id，在此项为空是需要填写上面两项 |
 | newScore      |          | 新成绩                               |
+
+返回数据：
+
+~~~json
+
+~~~
+
+失败返回数据：
+
+```java
+NO_PERMISSION(401,"无访问权限"),
+//未提交token/token无效/token权限不足
+```
+
+#### 2.4.11 calculateScore
+
+描述：
+
+接口url：/calculateScore/{examid}
+
+请求方式：GET
+
+请求参数：
+
+| 参数名称      | 参数类型 | 说明         |
+| ------------- | -------- | ------------ |
+| authorization | string   | Bearer token |
+| examId        | string   | 试卷id       |
 
 返回数据：
 

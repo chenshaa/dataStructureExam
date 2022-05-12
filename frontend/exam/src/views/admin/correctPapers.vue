@@ -77,7 +77,8 @@
 
             </el-row>
         </div>
-
+        
+        <!-- 选择题目Dialog -->
         <el-dialog title="选择题目" :visible.sync="dialogFormVisible">
             <el-form size="small">
                 <el-form-item label="考试场次:">
@@ -185,7 +186,6 @@
                 //题目信息
                 getQuesByIdApi(val).then(res => {
                     this.quesInfo = res.data.data;
-                    console.log(res);
                 });
                 //批改进度
                 quesCorrectProgressApi(this.examSelectValue, val).then(res => {

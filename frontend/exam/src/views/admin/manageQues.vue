@@ -4,12 +4,12 @@
         <div style="margin: 10px 0">
 
 
-            <el-input class="searchInput ml-5" placeholder="搜索题目" v-model="input" clearable></el-input>
+            <el-input class="searchInput ml-5" placeholder="搜索题目" v-model="searchInput" clearable></el-input>
             <el-button class="ml-5" icon="el-icon-search" circle></el-button>
 
             <el-divider direction="vertical"></el-divider>
 
-            <el-button type="primary" @click="userAdd">添加题目<i class="el-icon-circle-plus-outline"></i></el-button>
+            <el-button type="primary" @click="addQues">添加题目<i class="el-icon-circle-plus-outline"></i></el-button>
             <el-button type="danger" slot="reference">批量删除题目<i class="el-icon-remove-outline"></i></el-button>
         </div>
 
@@ -33,12 +33,18 @@
 
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="questionId" label="ID" width="200"></el-table-column>
-                <el-table-column prop="questionText" label="内容" width="160"></el-table-column>
+                <el-table-column prop="questionText" label="内容"></el-table-column>
                 <el-table-column prop="questionScore" label="分值" width="160"></el-table-column>
-                <el-table-column prop="questionType" label="题型" width="160"></el-table-column>
-                <el-table-column label="操作" align="left">
+                <el-table-column prop="questionType" label="题型" width="160">
                     <template slot-scope="scope">
-
+                        <el-tag :type="scope.row.questionType <=3 ? 'success' : 'warning'" disable-transitions>
+                            {{scope.row.questionTypeText}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="left" width="210">
+                    <template slot-scope="scope">
+                        <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i>
+                        </el-button>
                         <el-popconfirm class="ml-5" confirm-button-text='确定' cancel-button-text='我再想想'
                             icon="el-icon-info" icon-color="red" title="您确定删除吗？" @confirm="del(scope.row.questionId)">
                             <el-button type="danger" slot="reference">移除 <i class="el-icon-remove-outline"></i>
@@ -54,7 +60,7 @@
         <!--   dialog    -->
 
         <div>
-            <el-dialog title="添加新题目" :visible.sync="dialogFormVisible" width="60%" :close-on-click-modal=false
+            <el-dialog title="添加新题目" :visible.sync="addQuesFormVisible" width="60%" :close-on-click-modal=false
                 :close-on-press-escape=false>
                 <el-form label-width=auto size="small">
 
@@ -74,7 +80,7 @@
 
                         <el-descriptions-item label="关联考试">
                             <el-select value-key="examId" v-model="form.questionLink" filterable placeholder="可以为空">
-                                <el-option v-for="item in selectItems" :key="item.examId" :label="item.examName"
+                                <el-option v-for="item in selectExams" :key="item.examId" :label="item.examName"
                                     :value="item.examId">
                                 </el-option>
                             </el-select>
@@ -115,7 +121,7 @@
                 </el-form>
 
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogFormVisible = false;editMode=false">取 消</el-button>
+                    <el-button @click="addQuesFormVisible = false">取 消</el-button>
                     <el-button type="primary" @click="save">确 定</el-button>
                 </div>
 
@@ -147,16 +153,14 @@
     export default {
         data() {
             return {
-                input: '',
+                searchInput: '',
                 tableData: [],
-                dialogFormVisible: false,
-                editMode: false,
+                addQuesFormVisible: false,
                 multipleSelection: [],
                 form: {
 
                 },
-                options: [],
-                selectItems: [],
+                selectExams: [],
                 selectValue: '',
                 quesSelectItems: [],
                 quesSelectValue: '',
@@ -197,9 +201,15 @@
         },
         methods: {
             load() {
-
                 listAllQuesApi().then(res => {
                     var table = res.data.data;
+                    for (var j = 0; j < table.length; j++) {
+                        for (var i = 0; i < this.quesTypeItems.length; i++) {
+                            if (this.quesTypeItems[i].value == table[j].questionType) {
+                                table[j].questionTypeText = this.quesTypeItems[i].name;
+                            }
+                        }
+                    }
                     this.tableData = table;
                 });
             },
@@ -213,7 +223,7 @@
                             type: 'success',
                             showClose: true
                         });
-                        this.dialogFormVisible = false;
+                        this.addQuesFormVisible = false;
                         this.load();
                     } else {
                         //添加失败
@@ -226,8 +236,8 @@
                 });
 
             },
-            userAdd() {
-                this.dialogFormVisible = true;
+            addQues() {
+                this.addQuesFormVisible = true;
                 listAllQuesApi().then(res => {
                     this.quesSelectItems = res.data.data;
 
@@ -243,7 +253,7 @@
                     param2: this.selectValue
                 }).then(res => {
                     if (res.data.code == 200) {
-                        //添加成功
+                        //删除成功
                         this.$message({
                             message: '移除成功',
                             type: 'success',
@@ -251,7 +261,7 @@
                         });
                         this.selectChangeFn(this.selectValue);
                     } else {
-                        //添加失败
+                        //删除失败
                         this.$message({
                             message: '移除失败：' + res.data.msg + '  code' + res.data.code,
                             type: 'error',
@@ -276,6 +286,9 @@
             compileMarkDown(val) {
                 return converter.makeHtml(val);
             },
+            handleEdit(val) {
+                this.$message('todo:题目信息编辑');
+            }
 
 
         },

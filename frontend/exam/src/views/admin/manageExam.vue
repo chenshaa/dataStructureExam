@@ -4,9 +4,9 @@
         <div style="margin: 10px 0">
             <el-input class="searchInput ml-5" placeholder="请输入内容" v-model="input" clearable></el-input>
             <el-button class="ml-5" icon="el-icon-search" circle></el-button>
-            
+
             <el-divider direction="vertical"></el-divider>
-            
+
             <el-button type="primary" @click="userAdd">增加场次<i class="el-icon-circle-plus-outline"></i></el-button>
             <el-button type="danger" slot="reference">批量删除场次<i class="el-icon-remove-outline"></i></el-button>
         </div>
@@ -17,11 +17,11 @@
                 @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="examId" label="ID" width="200"></el-table-column>
-                <el-table-column prop="examName" label="考试名称" width="160"></el-table-column>
+                <el-table-column prop="examName" label="考试名称"></el-table-column>
                 <el-table-column prop="examDescription" label="描述" width="160"></el-table-column>
                 <el-table-column prop="examStartTime" label="开始时间" width="160"></el-table-column>
                 <el-table-column prop="examEndTime" label="结束时间" width="160"></el-table-column>
-                <el-table-column label="操作" align="left" width="320">
+                <el-table-column label="操作" align="left" width="460">
                     <template slot-scope="scope">
 
                         <el-button type="primary" @click="handleStart(scope.row)">现在开始 <i
@@ -239,8 +239,8 @@
                     }
                 });
             },
-            del(id){
-                
+            del(id) {
+
             }
 
         }
